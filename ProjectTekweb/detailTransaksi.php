@@ -17,7 +17,7 @@ class DetailTransaksi {
         $sql = "INSERT INTO detail_transaksi (id_detprod, jumlah, subtotal, id_transaksi) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iiid", $this->id_detprod, $this->jumlah, $this->subtotal, $this->id_transaksi);
+        $stmt->bind_param("iiii", $this->id_detprod, $this->jumlah, $this->subtotal, $this->id_transaksi);
         return $stmt->execute();
     }
 }
