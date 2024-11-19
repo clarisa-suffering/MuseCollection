@@ -2,13 +2,18 @@
 class DetailProduk {
     private $conn;
 
+    public $id_detprod;
+    public $stok_toko;
+    public $stok_gudang;
+
+
     // Constructor to set up the database connection
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
     // Function to get stock levels based on product ID and size ID
-    public function checkStock($kode_barang, $ukuran) {
+    public function checkStockToko($kode_barang, $ukuran) {
         $stmt = $this->conn->prepare("SELECT stok_toko FROM detail_produk dp join produk p on dp.id_barang=p.id_barang JOIN ukuran u on dp.id_ukuran=u.id_ukuran WHERE p.kode_barang=? and u.ukuran=?");
         $stmt->bind_param("ss", $kode_barang, $ukuran);
         $stmt->execute();

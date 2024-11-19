@@ -7,7 +7,7 @@ $kode_barang = $_GET['kode_barang'];
 $ukuran = $_GET['ukuran'];
 $jumlah = $_GET['jumlah'];
 
-$stock = $detailProduk->checkStock($kode_barang, $ukuran);
+$stock = $detailProduk->checkStockToko($kode_barang, $ukuran);
 if($stock >= $jumlah) {
     echo 'Stock available';
 } else {
@@ -15,5 +15,3 @@ if($stock >= $jumlah) {
 }
 ?>
 
-
-<!-- halo -->
