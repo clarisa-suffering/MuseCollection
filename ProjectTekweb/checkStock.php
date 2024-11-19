@@ -14,3 +14,6 @@ if($stock >= $jumlah) {
     echo 'Not enough stock';
 }
 ?>
+
+
+<!-- halo -->
