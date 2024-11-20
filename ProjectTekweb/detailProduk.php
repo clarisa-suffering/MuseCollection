@@ -6,7 +6,6 @@ class DetailProduk {
     public $stok_toko;
     public $stok_gudang;
 
-
     // Constructor to set up the database connection
     public function __construct($conn) {
         $this->conn = $conn;
@@ -14,7 +13,10 @@ class DetailProduk {
 
     // Function to get stock levels based on product ID and size ID
     public function checkStockToko($kode_barang, $ukuran) {
-        $stmt = $this->conn->prepare("SELECT stok_toko FROM detail_produk dp join produk p on dp.id_barang=p.id_barang JOIN ukuran u on dp.id_ukuran=u.id_ukuran WHERE p.kode_barang=? and u.ukuran=?");
+        $stmt = $this->conn->prepare("SELECT stok_toko FROM detail_produk dp 
+                                      JOIN produk p ON dp.id_barang = p.id_barang 
+                                      JOIN ukuran u ON dp.id_ukuran = u.id_ukuran 
+                                      WHERE p.kode_barang = ? AND u.ukuran = ?");
         $stmt->bind_param("ss", $kode_barang, $ukuran);
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
@@ -30,12 +32,36 @@ class DetailProduk {
         $stmt->close();
     }
 
-    // Additional function to update stock after adding to a transaction
+    // Function to update stock after adding to a transaction
     public function updateStock($id_detprod, $stok_toko) {
-        $stmt =  $this->conn->prepare("UPDATE detail_produk SET stok_toko = ? WHERE id_detprod = ?");
+        $stmt = $this->conn->prepare("UPDATE detail_produk SET stok_toko = ? WHERE id_detprod = ?");
         $stmt->bind_param("ii", $stok_toko, $id_detprod);
         $stmt->execute();
         $stmt->close();
+    }
+
+    // Function to reduce stock after a transaction is confirmed
+    public function reduceStock($id_detprod, $jumlah) {
+        // Get the current stock level
+        $stmt = $this->conn->prepare("SELECT stok_toko FROM detail_produk WHERE id_detprod = ?");
+        $stmt->bind_param("i", $id_detprod);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if ($result) {
+            $current_stock = $result['stok_toko'];
+            $new_stock = $current_stock - $jumlah;
+
+            // Update the stock only if the result is not negative
+            if ($new_stock >= 0) {
+                $this->updateStock($id_detprod, $new_stock);
+                return true;
+            } else {
+                return false; // Stock cannot be negative
+            }
+        }
+        return false; // Return false if product not found
     }
 
     // get id from kode and ukuran
@@ -56,4 +82,5 @@ class DetailProduk {
         }
     }
 }
+
 ?>

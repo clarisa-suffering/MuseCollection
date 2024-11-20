@@ -3,6 +3,7 @@ include 'koneksi.php'; // Database connection
 include 'transaksi.php';  // Your Transaksi class
 include 'detailTransaksi.php'; // Your DetailTransaksi class
 include 'pelanggan.php'; // Include Pelanggan class
+include 'detailProduk.php'; // Include DetailProduk class
 
 // Create an instance of Pelanggan
 $pelanggan = new Pelanggan($conn);
@@ -13,11 +14,14 @@ $pelanggan->alamat = $_POST['alamat'];
 // Insert Pelanggan into the database and get the id_pelanggan
 $id_pelanggan = $pelanggan->insertPelanggan();
 
+// Create an instance of DetailProduk
+$detailProduk = new DetailProduk($conn);
+
 // If Pelanggan insertion was successful, proceed to create the transaction
 if ($id_pelanggan) {
     // Create a new Transaksi object
     $transaksi = new Transaksi($conn);
-    $transaksi->id_pelanggan=$id_pelanggan;
+    $transaksi->id_pelanggan = $id_pelanggan;
     $transaksi->kategori_penjualan = $_POST['kategori_penjualan']; // Assuming 'kategori_penjualan' is sent with the POST request
     $transaksi->harga_total = $_POST['harga_total'];
 
@@ -29,9 +33,16 @@ if ($id_pelanggan) {
         $id_detprod = $detail['id_detprod'];
         $jumlah = $detail['jumlah'];
         $subtotal = $detail['subtotal'];
-        
-        // Use the method to add the detail to the transaction
-        $transaksi->addDetailTransaksi($id_detprod, $jumlah, $subtotal);
+
+        // Reduce stock before adding the detail
+        if ($detailProduk->reduceStock($id_detprod, $jumlah)) {
+            // If stock reduction is successful, add the detail to the transaction
+            $transaksi->addDetailTransaksi($id_detprod, $jumlah, $subtotal);
+        } else {
+            // Handle stock error (e.g., insufficient stock)
+            echo 'Error: Insufficient stock for product ID ' . $id_detprod;
+            exit;
+        }
     }
 
     // Insert the transaction and all related details in one go
@@ -43,3 +54,4 @@ if ($id_pelanggan) {
 } else {
     echo 'Failed to insert customer.';
 }
+?>
