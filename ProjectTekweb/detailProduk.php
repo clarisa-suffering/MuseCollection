@@ -21,7 +21,12 @@ class DetailProduk {
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
         $stmt->close();
-        return $result;
+        
+        if ($result) {
+            return $result['stok_toko'];  // Return
+        } else {
+            return null;  // Return null if no matching record is found
+        }
     }
 
     // Function to insert a new detail record into the detail_produk table
@@ -81,6 +86,7 @@ class DetailProduk {
             return null;  // Return null if no matching record is found
         }
     }
+
 }
 
 ?>

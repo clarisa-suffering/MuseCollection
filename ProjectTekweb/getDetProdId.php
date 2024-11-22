@@ -17,6 +17,6 @@ $id_detprod = $detailProduk->getIdDetprod($kode_barang, $ukuran);
 if ($id_detprod) {
     echo $id_detprod;
 } else {
-    echo "Product size not found";
+    echo "Product not found";
 }
 ?>

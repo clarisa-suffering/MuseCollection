@@ -37,7 +37,13 @@ if ($id_pelanggan) {
         // Reduce stock before adding the detail
         if ($detailProduk->reduceStock($id_detprod, $jumlah)) {
             // If stock reduction is successful, add the detail to the transaction
-            $transaksi->addDetailTransaksi($id_detprod, $jumlah, $subtotal);
+            $detail = new DetailTransaksi($conn);
+            $detail->id_detprod = $id_detprod;
+            $detail->jumlah = $jumlah;
+            $detail->subtotal = $subtotal;
+    
+            // Add the detail to the transaction's details array
+            $transaksi->details[] = $detail;
         } else {
             // Handle stock error (e.g., insufficient stock)
             echo 'Error: Insufficient stock for product ID ' . $id_detprod;

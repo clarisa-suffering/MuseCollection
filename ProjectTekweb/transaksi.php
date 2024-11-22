@@ -15,18 +15,7 @@ class Transaksi {
         $this->conn = $conn;
     }
 
-    // Function to add detail transaksi to the transaction
-    public function addDetailTransaksi($id_detprod, $jumlah, $subtotal) {
-        // Ensure a new DetailTransaksi object is created
-        $detail = new DetailTransaksi($this->conn);
-        $detail->id_detprod = $id_detprod;
-        $detail->jumlah = $jumlah;
-        $detail->subtotal = $subtotal;
-
-        // Add the detail to the transaction's details array
-        $this->details[] = $detail;
-    }
-
+    
     // Function to insert the transaction into the database
     public function insertTransaksi() {
         // Insert the main transaction
