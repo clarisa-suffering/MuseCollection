@@ -356,6 +356,23 @@ $('#modalSuksesReduce').on('hidden.bs.modal', function () {
     }
 });
 
+$('#modalSukses').on('hidden.bs.modal', function () {
+    $('#nama').val('');
+    $('#alamat').val('');
+    $('#nomorTelepon').val('');
+    $('#kodeProduk').val('');
+    $('#ukuran').val('');
+    $('#jumlah').val('');
+    $('#hargatotal').val('0');
+
+
+    $('#tblProduk').empty();
+
+    $('#divDetail').addClass('hidden');
+
+    $('input[name="kategori"]').prop('checked', false);
+});
+
 function mencatatTransaksi(nama, alamat, nomorTelepon, kategori_penjualan, harga_total, details) {
     $.ajax({
         url: 'konfirmasiTransaksi.php',
