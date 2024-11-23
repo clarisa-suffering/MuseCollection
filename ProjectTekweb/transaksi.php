@@ -8,7 +8,7 @@ class Transaksi {
     public $status_transaksi;
     public $tanggal_transaksi;
 
-    // To hold the details before confirmation
+    // Detail transaksi
     public $details = [];
 
     public function __construct($conn) {
@@ -16,21 +16,20 @@ class Transaksi {
     }
 
     
-    // Function to insert the transaction into the database
-    public function insertTransaksi() {
-        // Insert the main transaction
+    // Mencatat transaksi
+    public function mencatatTransaksi() {
         $sql = "INSERT INTO transaksi (id_pelanggan, kategori_penjualan, harga_total) 
                 VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("isd", $this->id_pelanggan, $this->kategori_penjualan, $this->harga_total);
         if ($stmt->execute()) {
-            $this->id_transaksi = $this->conn->insert_id;  // Get the inserted ID
+            $this->id_transaksi = $this->conn->insert_id;  // Get inserted ID
 
-            // Insert all the details
+            // Catat detail transaksi
             foreach ($this->details as $detail) {
-                $detail->id_transaksi = $this->id_transaksi; // Set the transaction ID for each detail
-                if (!$detail->insertDetailTransaksi()) {
-                    return false; // If any insert fails, return false
+                $detail->id_transaksi = $this->id_transaksi; // Set id transaksi mjd id trans detail
+                if (!$detail->mencatatDetailTransaksi()) {
+                    return false;
                 }
             }
             return true;

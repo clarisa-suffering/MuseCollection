@@ -12,8 +12,8 @@ class DetailTransaksi {
         $this->conn = $conn;
     }
 
-    // Function to insert detail transaksi
-    public function insertDetailTransaksi() {
+    // mencatat detail transaksi
+    public function mencatatDetailTransaksi() {
         $sql = "INSERT INTO detail_transaksi (id_detprod, jumlah, subtotal, id_transaksi) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);

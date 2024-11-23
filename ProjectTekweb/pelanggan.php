@@ -11,8 +11,8 @@ class Pelanggan {
         $this->conn = $conn;
     }
 
-    // Function to insert a new Pelanggan into the database
-    public function insertPelanggan() {
+    // Mencatat pelanggan
+    public function mencatatPelanggan() {
         try {
             $stmt = $this->conn->prepare("INSERT INTO pelanggan (nama, nomor_telepon, alamat) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $this->nama, $this->nomor_telepon, $this->alamat);
@@ -28,12 +28,6 @@ class Pelanggan {
             return false;
         }
     }
-
-    // Function to create a new transaction
-    public function createTransaksi($kategori_penjualan) {
-        $transaksi = new Transaksi($this->conn);
-        $transaksi->kategori_penjualan = $kategori_penjualan;
-        return $transaksi;
-    }
+    
 }
 ?>
