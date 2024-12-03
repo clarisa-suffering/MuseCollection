@@ -35,30 +35,33 @@
 <body>
     <div class="container mt-4">
         <h2>Pilih Periode Laporan</h2>
-        <form method="POST" action="laporanTransaksi.php">
+        <form method="POST">
             <div class="row g-3 align-items-center">
                 <!-- Input Tanggal Awal -->
                 <div class="col-md-5">
                     <label for="start_date" class="form-label">Tanggal Awal:</label>
-                    <input type="text" name="start_date" id="start_date" class="form-control datepicker" placeholder="DD-MM-YYYY" required>
+                    <input type="text" name="start_date" id="start_date" class="form-control datepicker" placeholder="YYYY-MM-DD" 
+                                    value="<?php echo isset($_POST['start_date']) ? $_POST['start_date'] : ''; ?>" required>
                 </div>
                 <!-- Input Tanggal Akhir -->
                 <div class="col-md-5">
                     <label for="end_date" class="form-label">Tanggal Akhir:</label>
-                    <input type="text" name="end_date" id="end_date" class="form-control datepicker" placeholder="DD-MM-YYYY" required>
+                    <input type="text" name="end_date" id="end_date" class="form-control datepicker" placeholder="YYYY-MM-DD"
+                                    value="<?php echo isset($_POST['end_date']) ? $_POST['end_date'] : ''; ?>" required>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary">Go</button>
                 </div>
             </div>
-                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button>
+                <!-- <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button> -->
         </form>
     </div>
 
-    <table>
-        <thead>
+    <div class="container mt-4">
+        <table class="table table-bordered mx-auto" style="width: auto;">
+            <thead>
                 <tr>
-                    <th>Timestamp</th>
+                    <th>Timestamp Transaksi</th>
                     <th>Nama Pelanggan</th>
                     <th>Kode Barang</th>
                     <th>Ukuran</th>
@@ -66,22 +69,24 @@
                     <th>Harga Satuan</th>
                     <th>Harga Total</th>
                 </tr>
-        </thead>
-
-        <!-- <tbody>
-            <?php
-            include 'laporanTransaksi.php';  // Include file filter_laporan.php untuk mengambil data
-            ?>
-        </tbody> -->
-    </table>
-</table>
+            </thead>
+            <tbody>
+                <?php
+                    // Pastikan data hanya ditampilkan setelah form dikirim
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['start_date']) && isset($_POST['end_date']) && !empty($_POST['start_date']) && !empty($_POST['end_date'])) {
+                        include 'laporanTransaksi.php';  // Menampilkan data berdasarkan rentang tanggal
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
 
 
 
     <script>
         $(document).ready(function() {
             $('.datepicker').datepicker({
-                format: 'dd-mm-yyyy', // Format tanggal
+                format: 'yyyy-mm-dd', // Format tanggal
                 autoclose: true,      // Menutup otomatis setelah memilih tanggal
                 todayHighlight: true, // Menyorot tanggal hari ini
                 orientation: 'bottom',// Tampilan picker
