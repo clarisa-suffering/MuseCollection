@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Karyawan</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Absensi Karyawan</h1>
+
+    <!-- Dropdown Filter Tanggal -->
+    <label for="tanggal">Filter Tanggal:</label>
+    <input type="date" id="tanggal">
+
+    <!-- Input Search Nama -->
+    <label for="nama_karyawan">Cari Nama:</label>
+    <input type="text" id="nama_karyawan" placeholder="Nama Karyawan">
+
+    <!-- Tombol Filter -->
+    <button onclick="filterAbsensi()">Tampilkan</button>
+
+    <!-- Tabel Absensi -->
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Karyawan</th>
+                <th>Jam</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="data-absensi">
+            <tr>
+                <td colspan="3">Tidak ada data.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Fungsi untuk menampilkan data absensi
+        function filterAbsensi() {
+            const tanggal = document.getElementById('tanggal').value;
+            const nama_karyawan = document.getElementById('nama_karyawan').value;
+
+            // Panggil API absensi.php
+            fetch(`absensi.php?tanggal=${tanggal}&nama_karyawan=${nama_karyawan}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('data-absensi');
+                    tbody.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach(row => {
+                            const status = row.status === '1' ? 'Hadir' : 'Tidak Hadir';
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${row.nama}</td>
+                                <td>${row.jam}</td>
+                                <td>${status}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="3">Tidak ada data.</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
