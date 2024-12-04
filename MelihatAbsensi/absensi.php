@@ -1,47 +1,65 @@
 <?php
 // Koneksi ke database
-$conn = new mysqli('localhost', 'root', '', 'toko_baju');
+include 'conn.php'; // Jika ada file conn.php untuk koneksi
+// $conn = new mysqli('localhost', 'root', '', 'project_tekweb'); // Jika koneksi langsung
 
-// Cek koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
+// // Cek koneksi
+// if ($conn->connect_error) {
+//     die("Koneksi gagal: " . $conn->connect_error);
+// }
 
 // Ambil parameter filter
 $tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : '';
-$nama_karyawan = isset($_GET['nama_karyawan']) ? $_GET['nama_karyawan'] : '';
+$id_karyawan = isset($_GET['id_karyawan']) ? $_GET['id_karyawan'] : '';
 
-// Query dasar dengan JOIN
+// Query dasar
 $query = "
-    SELECT k.nama, a.jam, a.status 
-    FROM absensi a
-    JOIN karyawan k ON a.id_karyawan = k.id_karyawan
+    SELECT id_absensi, id_karyawan, jam, status 
+    FROM absensi
     WHERE 1=1
 ";
 
-// Filter berdasarkan tanggal
+
+// Tambahkan parameter filter
+$filter_params = [];
+$filter_types = '';
+
 if (!empty($tanggal)) {
-    $query .= " AND DATE(a.jam) = '$tanggal'";
+    $query .= " AND DATE(jam) = ?";
+    $filter_params[] = $tanggal;
+    $filter_types .= 's';
 }
 
-// Filter berdasarkan nama karyawan
-if (!empty($nama_karyawan)) {
-    $query .= " AND k.nama LIKE '%$nama_karyawan%'";
+if (!empty($id_karyawan)) {
+    $query .= " AND id_karyawan = ?";
+    $filter_params[] = $id_karyawan;
+    $filter_types .= 'i'; // 'i' untuk tipe integer
 }
 
-// Eksekusi query
-$result = $conn->query($query);
+// Debugging: lihat query yang dihasilkan
+// echo "Query yang dijalankan: " . $query . "<br>";
+
+// Siapkan dan eksekusi query
+$stmt = $conn->prepare($query);
+
+if ($filter_params) {
+    $stmt->bind_param($filter_types, ...$filter_params);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Format data ke JSON
 $data = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
 }
+
+// Tutup koneksi
+$stmt->close();
+$conn->close();
 
 // Kirim data ke frontend
 header('Content-Type: application/json');
 echo json_encode($data);
 ?>
-    
