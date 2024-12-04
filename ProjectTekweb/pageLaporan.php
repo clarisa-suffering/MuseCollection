@@ -67,7 +67,8 @@
                     <th>Ukuran</th>
                     <th>Jumlah</th>
                     <th>Harga Satuan</th>
-                    <th>Harga Total</th>
+                    <th>Subtotal</th>
+                    <th class="harga-total">Harga Total</th>
                 </tr>
             </thead>
             <tbody>
