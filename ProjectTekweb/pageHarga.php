@@ -9,19 +9,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
+  <!-- Search Bar -->
     <div class="container text-center mt-5">
       <div class="input-group">
         <div class="form-outline border rounded" data-mdb-input-init>
           <input type="search" id="findKode" class="form-control" placeholder="Search">
-          <!-- <label class="form-label" for="findKode">Search</label> -->
         </div>
         <button type="button" id="btnSearch" class="btn btn-primary" data-mdb-ripple-init>
           <i class="fas fa-search"></i>
@@ -29,6 +30,7 @@
       </div>
     </div>
 
+    <!-- Price Form -->
     <div class="container text-center mt-3">
         <div class="col-12 col-md-6">
           <form id = "price-form">
@@ -51,53 +53,15 @@
               </div>
             </div>
             <button type="submit" id="btnEditHarga" class="btn btn-primary">Edit Harga</button>
-            <button type="button" id="btnBack" class="btn btn-primary">Kembali</button>
           </form>
         </div>
        </div>
 
-
-      <!-- Modal kode tidak ditemukan -->
-      <div class="modal fade" id="notFoundModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="notFoundModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="notFoundModalLabel">NOT FOUND</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Maaf, kode barang tidak ditemukan
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Modal konfirmasi sukses -->
-      <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="successModalLabel">SUCCESS</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Perubahan harga berhasil disimpan
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
-
+  
   <script>
     $(document).ready(function () {
 
+      // SEARCH KODE
       $("#btnSearch").on("click", function () {
           const inputKode = $("#findKode").val();
 
@@ -109,35 +73,52 @@
                   success: function (response) {
                       const data = JSON.parse(response);
 
+                      // Jika data tidak ditemukan, tampilkan pesan error
                       if (data.error) {
-                                // Jika data tidak ditemukan, tampilkan pesan error
-                                const notFoundModal = new bootstrap.Modal(document.getElementById('notFoundModal'));
-                                notFoundModal.show();
-                                $("#inputKode").val("");
-                                $("#inputStok").val("");
-                                $("#inputHarga").val("");
-                            } else {
-                                // Jika data ditemukan, isi dengan data dari database
-                                $("#inputKode").val(data.kode_barang).prop("disabled", true); // Disable input kode
-                                $("#inputStok").val(data.stok_toko).prop("disabled", true); // Disable input stok
-                                $("#inputHarga").val(data.harga); // Isi harga
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'Kode barang tidak ditemukan',
+                        }).then((result) => {
+                            // Setelah tombol "OK" diklik, kosongkan field
+                            if (result.isConfirmed) {
+                                $("#findKode").val("");
+                            }
+                          });
+                      } 
+                      // Jika data ditemukan, isi dengan data dari database
+                      else {
+                          $("#inputKode").val(data.kode_barang).prop("disabled", true); // Disable input kode
+                          $("#inputStok").val(data.stok_toko).prop("disabled", true); // Disable input stok
+                          $("#inputHarga").val(data.harga); // Isi harga
 
-                                if (data.stok_toko == 0) {
-                                  $("#inputHarga").prop("disabled", true);
-                                  $("#btnEditHarga").prop("disabled", true);
-                                   // Tampilkan alert setelah data selesai diisi
-                                  setTimeout(function () {
-                                      alert("Stok barang tidak tersedia, harga tidak dapat diedit");
+                          // Jika stok toko tidak ada, harga tidak bisa diedit
+                          if (data.stok_toko == 0) {
+                            $("#inputHarga").prop("disabled", true);
+                            $("#btnEditHarga").prop("disabled", true);
+                            // Tampilkan alert
+                            setTimeout(function () {
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Stok Barang Tidak Tersedia',
+                                text: 'Harga tidak dapat diedit',
+                              }).then((result) => {
+                                  // Setelah tombol "OK" diklik, kosongkan field
+                                  if (result.isConfirmed) {
                                       $("#findKode").val("");
                                       $("#inputKode").val("");
                                       $("#inputStok").val("");
                                       $("#inputHarga").val("");
-                                  }, 100); // Tunggu 100ms untuk memastikan data terlihat
-                                } else {
-                                  $("#inputHarga").prop("disabled", false);
-                                  $("#btnEditHarga").prop("disabled", false);
-                                }
-                              }
+                                  }
+                              });
+                            }, 100); // Tunggu 100ms untuk memastikan data terlihat
+                          } 
+                          // Jika stok toko ada, maka harga bisa diedit
+                          else {
+                            $("#inputHarga").prop("disabled", false);
+                            $("#btnEditHarga").prop("disabled", false);
+                          }
+                        }
                   },
                   error: function () {
                       console.log("Gagal mengambil data");
@@ -146,55 +127,83 @@
         }
     });
 
-    // Edit Harga
+    // EDIT HARGA
     $("#btnEditHarga").on("click", function() {
       event.preventDefault();
       const kodeBarang = $("#inputKode").val();
       const hargaBaru = $("#inputHarga").val();
 
-      // Pastikan ada
+      // Cek apakah textfield ada isinya
       if (kodeBarang !== "" && hargaBaru !== "") {
         // Validasi BR2: Harga harus bilangan positif dalam ribuan
         if (isNaN(hargaBaru) || parseInt(hargaBaru) <= 0 || parseInt(hargaBaru) % 1000 !== 0) {
-            alert("Harga harus dalam bentuk bilangan positif dalam ribu rupiah.");
+            Swal.fire({
+              icon: 'error',
+              title: 'Harga Tidak Valid',
+              html: 'Harga harus dalam bentuk bilangan positif <br> dalam ribu rupiah',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#inputHarga").val("");
+                }
+            });
             return;
         }
 
-       // Log data yang dikirim ke server untuk debugging
-       console.log("Kode Barang:", kodeBarang);
-        console.log("Harga Baru:", hargaBaru);
+      // Log data yang dikirim ke server untuk debugging
+      console.log("Kode Barang:", kodeBarang);
+      console.log("Harga Baru:", hargaBaru);
 
-        $.ajax({
-          url: 'editHarga.php', // Endpoint untuk menyimpan data harga yang diedit
-          method: 'POST',
-          data: {
-            kode_barang: kodeBarang,
-            harga_baru: hargaBaru
-          },
-          success: function (response) {
-              try {
-                  const data = JSON.parse(response);
-                  if (data.success) {
-                      // Tampilkan modal sukses
-                      const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                      successModal.show();
-                  } else {
-                      alert('Gagal memperbarui harga');
-                  }
-              } catch (e) {
-                  console.error('Error parsing JSON:', e);
-                  console.log('Response from server:', response); // Untuk debugging
-              }
-          },
-          error: function () {
-              console.log('Error saving data');
-          }
-      });
-    } else {
-        alert('Mohon isi semua data');
-    }
-  });
-  
+      $.ajax({
+        url: 'editHarga.php', // Endpoint untuk menyimpan data harga yang diedit
+        method: 'POST',
+        data: {
+          kode_barang: kodeBarang,
+          harga_baru: hargaBaru
+        },
+        success: function (response) {
+            try {
+                if (response.success) {
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Success',
+                      text: 'Perubahan harga berhasil disimpan!',
+                    }).then((result) => {
+                          if (result.isConfirmed) {
+                              $("#findKode").val("");
+                              $("#inputKode").val("");
+                              $("#inputStok").val("");
+                              $("#inputHarga").val("");
+                          }
+                      });
+                } 
+                else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'Gagal memperbarui harga',
+                  }).then((result) => {
+                          if (result.isConfirmed) {
+                              $("#inputHarga").val("");
+                          }
+                      });
+                }
+            } catch (e) {
+                console.error('Error parsing JSON:', e);
+                console.log('Response from server:', response); // Untuk debugging
+            }
+        },
+        error: function () {
+            console.log('Error saving data');
+        }
+    });
+  } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Data Tidak Lengkap',
+        text: 'Mohon isi semua data',
+    });
+  }
+});
 
 
 });

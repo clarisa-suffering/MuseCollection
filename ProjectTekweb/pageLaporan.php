@@ -14,7 +14,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
@@ -35,7 +36,8 @@
 <body>
     <div class="container mt-4">
         <h2>Pilih Periode Laporan</h2>
-        <form method="POST">
+        <!-- FORM LAPORAN (datepicker) -->
+        <form id="formLaporan" method="POST">
             <div class="row g-3 align-items-center">
                 <!-- Input Tanggal Awal -->
                 <div class="col-md-5">
@@ -53,10 +55,10 @@
                     <button type="submit" class="btn btn-primary">Go</button>
                 </div>
             </div>
-                <!-- <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button> -->
         </form>
     </div>
 
+    <!-- TABEL LAPORAN -->
     <div class="container mt-4">
         <table class="table table-bordered mx-auto" style="width: auto;">
             <thead>
@@ -73,9 +75,9 @@
             </thead>
             <tbody>
                 <?php
-                    // Pastikan data hanya ditampilkan setelah form dikirim
+                    // Data hanya ditampilkan setelah form dikirim
                     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['start_date']) && isset($_POST['end_date']) && !empty($_POST['start_date']) && !empty($_POST['end_date'])) {
-                        include 'laporanTransaksi.php';  // Menampilkan data berdasarkan rentang tanggal
+                        include 'laporanTransaksi.php';  // Menampilkan data berdasarkan rentang tanggal (sesuai php laporanTransaksi)
                     }
                 ?>
             </tbody>
@@ -86,16 +88,57 @@
 
     <script>
         $(document).ready(function() {
+            // DATEPICKER
             $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd', // Format tanggal
                 autoclose: true,      // Menutup otomatis setelah memilih tanggal
                 todayHighlight: true, // Menyorot tanggal hari ini
                 orientation: 'bottom',// Tampilan picker
             });
+
+            // FORM LAPORAN
+            $("#formLaporan").on("submit", function(event) {
+                var startDate = $("#start_date").val();
+                var endDate = $("#end_date").val();
+                
+                var today = new Date().toISOString().split("T")[0]; // Format yyyy-mm-dd
+                // BR1: Validasi Tanggal tidak lebih dari hari ini
+                if (startDate > today || endDate > today) {
+                    event.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tanggal Tidak Valid',
+                        text: 'Tanggal yang dimasukkan tidak boleh lebih dari hari ini'
+                    }).then((result) => {
+                        // Setelah tombol "OK" diklik, kosongkan field
+                        if (result.isConfirmed) {
+                            $("#start_date").val("");
+                            $("#end_date").val("");
+                        }
+                    });
+                    return;
+                }
+
+                // BR2: Validasi Tanggal pertama harus kurang dari tanggal terakhir
+                if (startDate > endDate) {
+                    event.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tanggal Tidak Valid',
+                        text: 'Tanggal awal harus lebih kecil dari tanggal akhir'
+                    }).then((result) => {
+                        // Setelah tombol "OK" diklik, kosongkan field
+                        if (result.isConfirmed) {
+                            $("#start_date").val("");
+                            $("#end_date").val("");
+                        }
+                    });
+                    return;
+                }
+            })
         });
+
     </script>
-
-
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-    include 'koneksi.php';  // pastikan koneksi database
+    include 'koneksi.php';
     
     // Proses data jika form disubmit
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['start_date']) && isset($_POST['end_date']) && !empty($_POST['start_date']) && !empty($_POST['end_date'])) {
@@ -25,10 +25,11 @@
         // Jalankan query
         $laporan = $conn->query($query);
 
+        // Cek jika ada data pada laporan transaksi sesuai dgn tanggal yg dipilih
         if ($laporan->num_rows > 0) {
-            $current_transaksi = null;
-            $rowspan_data = [];
-            $data = [];
+            $current_transaksi = null;      // untuk melacak id_transaksi yg sedang diproses
+            $rowspan_data = [];             // untuk menyimpan jumlah baris per transaksi (sesuai id_transaksi)
+            $data = [];                     // untuk menyimpan semua hasil query
     
             // Hitung jumlah baris per transaksi dan simpan data
             while ($row = $laporan->fetch_assoc()) {
@@ -39,59 +40,47 @@
                 $rowspan_data[$row['id_transaksi']]++;
             }
     
-            // Render tabel
+            // Menampilkan data dalam tabel
             foreach ($data as $index => $row) {
-                $id_transaksi = $row['id_transaksi'];
-                $row_count = $rowspan_data[$id_transaksi];
+                $id_transaksi = $row['id_transaksi'];           // Mengambil id_transaksi dari data saat ini
+                $row_count = $rowspan_data[$id_transaksi];      // Menyimpan jumlah baris per transaksi saat ini
     
                 echo "<tr>";
     
                 // Jika transaksi baru, tambahkan kolom timestamp, nama, dan harga_total dengan rowspan
                 if ($current_transaksi !== $id_transaksi) {
                     $current_transaksi = $id_transaksi;
-                    $counter = 1;
+                    $counter = 1;       // counter untuk menghitung sudah di baris ke berapa
+                    // Transaksi yang sama hanya akan dimunculkan satu kali dan kolom timestamp dan nama dimerge
                     echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . htmlspecialchars($row['tanggal_transaksi']) . "</td>";
                     echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . htmlspecialchars($row['nama']) . "</td>";
-                    // Menampilkan harga_total hanya pada baris pertama
-                    // echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . htmlspecialchars($row['harga_total']) . "</td>";
                 }
     
-                // Tampilkan data lainnya
+                // Tampilkan data lainnya = detail transaksi
                 echo "<td>" . htmlspecialchars($row['kode_barang']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['ukuran']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['harga_satuan']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['subtotal']) . "</td>";
-                // echo "<td class='harga-total'>{$row['harga_total']}</td>";
-                
+
+                // Menampilkan harga_total hanya pada baris pertama
                 if ($current_transaksi === $id_transaksi && $counter <= 1) {
-                    // Menampilkan harga_total hanya pada baris pertama
                     echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . htmlspecialchars($row['harga_total']) . "</td>";
                 }
                 $counter++;
             }
-        } else {
-            echo "<tr><td colspan='8'>Tidak ada data untuk periode ini.</td></tr>";
+        } 
+        // Jika tidak ada transaksi pada periode tsb, akan memunculkan tulisan dan alert
+        else {
+            echo "<tr><td colspan='8' style='text-align: center;'>Data tidak tersedia untuk periode ini</td></tr>";
+            echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Tidak Ada Data',
+                            text: 'Tidak ada transaksi untuk periode ini'
+                        });
+                    </script>";
         }
-    
-
-        // // Tampilkan hasil query dalam tabel
-        // if ($laporan->num_rows > 0) {
-        //     while ($row = $laporan->fetch_assoc()) {
-        //         echo "<tr>";
-        //         echo "<td>" . $row['tanggal_transaksi'] . "</td>";
-        //         echo "<td>" . $row['nama'] . "</td>";
-        //         echo "<td>" . $row['kode_barang'] . "</td>";
-        //         echo "<td>" . $row['ukuran'] . "</td>";
-        //         echo "<td>" . $row['jumlah'] . "</td>";
-        //         echo "<td>" . $row['harga'] . "</td>";
-        //         echo "<td>" . $row['subtotal'] . "</td>";
-        //         echo "<td>" . $row['harga_total'] . "</td>";
-        //         echo "</tr>";
-        //     }
-        // } else {
-        //     echo "<tr><td colspan='8'>Tidak ada data untuk periode ini.</td></tr>";
-        // }
 
         // Tutup koneksi
         $conn->close();

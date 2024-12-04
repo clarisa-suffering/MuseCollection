@@ -1,21 +1,27 @@
 <?php
-// Termasuk file koneksi dan kelas-kelas yang diperlukan
+// Termasuk file yang bersangkutan / berhubungan
 include 'koneksi.php';
 include 'Produk.php';
 include 'RiwayatHarga.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $kode_barang = $_POST['kode_barang'];
-    $harga_baru = $_POST['harga_baru'];
+header('Content-Type: application/json');
 
-    var_dump($kode_barang);
-    var_dump($harga_baru);  
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Mengambil data dari permintaan POST (jika tidak ada maka diisi null)
+    $kode_barang = $_POST['kode_barang'] ?? null;
+    $harga_baru = $_POST['harga_baru'] ?? null;
+
+    // Validasi input
+    if (!$kode_barang || !$harga_baru) {
+        echo json_encode(['success' => false, 'message' => 'Kode barang atau harga baru tidak valid.']);
+        exit;
+    }
 
     // Buat objek Produk
     $produk = new Produk($conn);
-    $produk->kode_barang = $kode_barang; // Atur kode barang
+    $produk->kode_barang = $kode_barang;
 
-    // Mengecek apakah produk dengan kode tersebut ada
+    // Cek apakah produk dengan kode tersebut ada
     if ($produk->getHargaBarang($kode_barang)) {
         // Mengubah harga produk
         if ($produk->perubahanHarga($harga_baru)) {
