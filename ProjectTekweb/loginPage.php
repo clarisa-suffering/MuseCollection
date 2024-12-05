@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Karyawan</title>
@@ -56,21 +57,24 @@
             const result = await response.json();
 
             if (result.success) {
-                alert('Login berhasil!');
-                window.location.href = 'dashboard.php'; // Redirect ke halaman dashboard
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: 'Login berhasil.',
+                }).then(() => {
+                    // Redirect after the modal is closed
+                    window.location.href = 'dashboard.php'; // Redirect to dashboard
+                });
             } else {
                 // Reset fields
                 usernameField.value = '';
                 passwordField.value = '';
 
-                // Tampilkan notifikasi error
-                notification.innerText = result.message;
-                notification.style.display = 'block';
-
-                // Sembunyikan notifikasi setelah 3 detik
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 3000);
+                Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Username atau password salah.',
+                });
             }
         });
     </script>
