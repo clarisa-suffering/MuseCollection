@@ -5,6 +5,23 @@ include 'Karyawan.php';
 
 // Variabel untuk menyimpan alert jika ada
 $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
+
+// Ambil data pencarian dari URL jika ada
+$search = isset($_GET['cari']) ? $_GET['cari'] : '';
+
+// Query untuk mengambil data karyawan berdasarkan pencarian
+if ($search) {
+    // Jika ada kata pencarian
+    $sql = "SELECT * FROM karyawan WHERE nama LIKE ? OR kode_karyawan LIKE ?";
+    $stmt = $conn->prepare($sql);
+    $searchTerm = "%" . $search . "%";
+    $stmt->bind_param('ss', $searchTerm, $searchTerm);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    // Jika tidak ada pencarian, tampilkan semua data
+    $result = $conn->query("SELECT * FROM karyawan");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +31,7 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
     <title>Manajemen Karyawan</title>
     <!-- Tambahkan Bootstrap untuk styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -51,6 +69,17 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
 
         <!-- Tabel Daftar Karyawan -->
         <h4>Daftar Karyawan</h4>
+
+        <!-- Form Pencarian -->
+        <form method="GET" action="pageKaryawan.php" class="mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control" name="cari" placeholder="Cari nama atau kode karyawan" value="<?= htmlspecialchars($search) ?>">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
@@ -64,8 +93,7 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
             </thead>
             <tbody>
                 <?php
-                // Ambil data karyawan dari database
-                $result = $conn->query("SELECT * FROM karyawan");
+                // Tampilkan hasil pencarian atau semua data karyawan
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>
@@ -85,7 +113,7 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
                         </tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='6' class='text-center'>Belum ada data karyawan.</td></tr>";
+                    echo "<tr><td colspan='6' class='text-center'>Tidak ada karyawan yang ditemukan.</td></tr>";
                 }
                 ?>
             </tbody>
@@ -97,7 +125,6 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
 
     <!-- JavaScript untuk Edit Data -->
     <script>
@@ -148,6 +175,5 @@ $alert = isset($_GET['alert']) ? $_GET['alert'] : '';
             window.history.replaceState(null, null, url.toString());
         }
     </script>
-
 </body>
 </html>
