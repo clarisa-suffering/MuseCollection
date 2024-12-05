@@ -1,3 +1,16 @@
+<?php
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSION['jabatan'] !== 'pemilik')) {
+    // Redirect to login page if not logged in as kasir or pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -124,13 +137,18 @@ $(document).ready(function() {
         var nomorTelepon = $('#nomorTelepon').val();
 
         if (kategori_penjualan === 'PO') {
-            if (!nama || !alamat || !nomorTelepon) {
+            if ((!nama || !alamat || !nomorTelepon) || !/^08[0-9]{8,13}$/.test(nomorTelepon)) {
                 Swal.fire({
                 icon: 'warning',
                 title: 'Input Tidak Lengkap',
-                text: 'Untuk transaksi PO, input semua data pelanggan (nama, alamat, dan nomor telepon).',
-                });
-                return false;
+                text: 'Untuk transaksi PO, input semua data pelanggan (nama, alamat, dan nomor telepon) secara valid.',
+                }).then(() => {
+                    // Membuat kategori penjualan tidak tercentang
+                    $('input[name="kategori"]').prop('checked', false);
+                    $('#divDetail').addClass('hidden');
+                    });
+                    return false;
+                
             }
         } else if (kategori_penjualan === 'retail') {
             if (!nama) {
@@ -138,7 +156,11 @@ $(document).ready(function() {
                 icon: 'warning',
                 title: 'Input Tidak Lengkap',
                 text: 'Untuk transaksi Non-PO, input nama.',
-                });
+                }).then(() => {
+                    // Membuat kategori penjualan tidak tercentang
+                    $('input[name="kategori"]').prop('checked', false);
+                    $('#divDetail').addClass('hidden');
+                    });
                 return false;
             }
         }

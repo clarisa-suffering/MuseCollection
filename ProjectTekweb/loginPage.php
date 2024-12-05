@@ -57,7 +57,7 @@
 
             if (result.success) {
                 alert('Login berhasil!');
-                window.location.href = 'dashboard.html'; // Redirect ke halaman dashboard
+                window.location.href = 'dashboard.php'; // Redirect ke halaman dashboard
             } else {
                 // Reset fields
                 usernameField.value = '';

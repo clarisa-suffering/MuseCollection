@@ -1,4 +1,6 @@
 <?php
+session_set_cookie_params(0);
+session_start();  // Start the session
 
 include 'koneksi.php'; 
 // header('Content-Type: application/json');
@@ -9,7 +11,7 @@ $inputUsername = $data['username'];
 $inputPassword = $data['password'];
 
 // Query data karyawan dari database
-$query = "SELECT kode_karyawan, nama, start_date FROM karyawan";
+$query = "SELECT kode_karyawan, nama, start_date, jabatan FROM karyawan";
 $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
@@ -29,6 +31,7 @@ if ($result->num_rows > 0) {
         // Validasi username dan password
         if ($inputUsername === $username && $inputPassword === $password) {
             $isValid = true;
+            $_SESSION['jabatan'] = $row['jabatan'];
             break;
         }
     }
