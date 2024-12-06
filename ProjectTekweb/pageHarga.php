@@ -1,0 +1,212 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Coba Project</title>
+    <!-- <link rel="stylesheet" href="Latihan Test (card form) Style.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Search Bar -->
+    <div class="container text-center mt-5">
+      <div class="input-group">
+        <div class="form-outline border rounded" data-mdb-input-init>
+          <input type="search" id="findKode" class="form-control" placeholder="Search">
+        </div>
+        <button type="button" id="btnSearch" class="btn btn-primary" data-mdb-ripple-init>
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Price Form -->
+    <div class="container text-center mt-3">
+        <div class="col-12 col-md-6">
+          <form id = "price-form">
+            <div class="row mb-3 align-items-center">
+              <label for="inputKode" class="col-sm-3 col-form-label">Kode</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputKode">
+                </div>
+            </div>
+            <div class="row mb-3 align-items-center">
+              <label for="inputStok" class="col-sm-3 col-form-label">Stok</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputStok">
+              </div>
+            </div>
+            <div class="row mb-3 align-items-center">
+              <label for="inputHarga" class="col-sm-3 col-form-label">Harga</label>
+              <div class="col-sm-9">
+                  <input type="text" class="form-control" id="inputHarga">
+              </div>
+            </div>
+            <button type="submit" id="btnEditHarga" class="btn btn-primary">Edit Harga</button>
+          </form>
+        </div>
+       </div>
+
+  
+  <script>
+    $(document).ready(function () {
+
+      // SEARCH KODE
+      $("#btnSearch").on("click", function () {
+          const inputKode = $("#findKode").val();
+
+          if (inputKode !== '') {
+              $.ajax({
+                  url: "searchKode.php", // File pencarian
+                  method: "GET",
+                  data: { inputKode: inputKode },
+                  success: function (response) {
+                      const data = JSON.parse(response);
+
+                      // Jika data tidak ditemukan, tampilkan pesan error
+                      if (data.error) {
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'Kode barang tidak ditemukan',
+                        }).then((result) => {
+                            // Setelah tombol "OK" diklik, kosongkan field
+                            if (result.isConfirmed) {
+                                $("#findKode").val("");
+                            }
+                          });
+                      } 
+                      // Jika data ditemukan, isi dengan data dari database
+                      else {
+                          $("#inputKode").val(data.kode_barang).prop("disabled", true); // Disable input kode
+                          $("#inputStok").val(data.stok_toko).prop("disabled", true); // Disable input stok
+                          $("#inputHarga").val(data.harga); // Isi harga
+
+                          // Jika stok toko tidak ada, harga tidak bisa diedit
+                          if (data.stok_toko == 0) {
+                            $("#inputHarga").prop("disabled", true);
+                            $("#btnEditHarga").prop("disabled", true);
+                            // Tampilkan alert
+                            setTimeout(function () {
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Stok Barang Tidak Tersedia',
+                                text: 'Harga tidak dapat diedit',
+                              }).then((result) => {
+                                  // Setelah tombol "OK" diklik, kosongkan field
+                                  if (result.isConfirmed) {
+                                      $("#findKode").val("");
+                                      $("#inputKode").val("");
+                                      $("#inputStok").val("");
+                                      $("#inputHarga").val("");
+                                  }
+                              });
+                            }, 100); // Tunggu 100ms untuk memastikan data terlihat
+                          } 
+                          // Jika stok toko ada, maka harga bisa diedit
+                          else {
+                            $("#inputHarga").prop("disabled", false);
+                            $("#btnEditHarga").prop("disabled", false);
+                          }
+                        }
+                  },
+                  error: function () {
+                      console.log("Gagal mengambil data");
+                  }
+              });
+        }
+    });
+
+    // EDIT HARGA
+    $("#btnEditHarga").on("click", function() {
+      event.preventDefault();
+      const kodeBarang = $("#inputKode").val();
+      const hargaBaru = $("#inputHarga").val();
+
+      // Cek apakah textfield ada isinya
+      if (kodeBarang !== "" && hargaBaru !== "") {
+        // Validasi BR2: Harga harus bilangan positif dalam ribuan
+        if (isNaN(hargaBaru) || parseInt(hargaBaru) <= 0 || parseInt(hargaBaru) % 1000 !== 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Harga Tidak Valid',
+              html: 'Harga harus dalam bentuk bilangan positif <br> dalam ribu rupiah',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#inputHarga").val("");
+                }
+            });
+            return;
+        }
+
+      // Log data yang dikirim ke server untuk debugging
+      console.log("Kode Barang:", kodeBarang);
+      console.log("Harga Baru:", hargaBaru);
+
+      $.ajax({
+        url: 'editHarga.php', // Endpoint untuk menyimpan data harga yang diedit
+        method: 'POST',
+        data: {
+          kode_barang: kodeBarang,
+          harga_baru: hargaBaru
+        },
+        success: function (response) {
+            try {
+                if (response.success) {
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Success',
+                      text: 'Perubahan harga berhasil disimpan!',
+                    }).then((result) => {
+                          if (result.isConfirmed) {
+                              $("#findKode").val("");
+                              $("#inputKode").val("");
+                              $("#inputStok").val("");
+                              $("#inputHarga").val("");
+                          }
+                      });
+                } 
+                else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'Gagal memperbarui harga',
+                  }).then((result) => {
+                          if (result.isConfirmed) {
+                              $("#inputHarga").val("");
+                          }
+                      });
+                }
+            } catch (e) {
+                console.error('Error parsing JSON:', e);
+                console.log('Response from server:', response); // Untuk debugging
+            }
+        },
+        error: function () {
+            console.log('Error saving data');
+        }
+    });
+  } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Data Tidak Lengkap',
+        text: 'Mohon isi semua data',
+    });
+  }
+});
+
+
+});
+  </script>
+</body>
+</html>
