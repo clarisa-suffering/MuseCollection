@@ -50,13 +50,13 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
             <div class="row mb-3 align-items-center">
               <label for="inputKode" class="col-sm-3 col-form-label">Kode</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputKode">
+                    <input type="text" class="form-control" id="inputKode" disabled>
                 </div>
             </div>
             <div class="row mb-3 align-items-center">
               <label for="inputStok" class="col-sm-3 col-form-label">Stok</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="inputStok">
+                <input type="text" class="form-control" id="inputStok" disabled>
               </div>
             </div>
             <div class="row mb-3 align-items-center">
@@ -149,7 +149,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
       // Cek apakah textfield ada isinya
       if (kodeBarang !== "" && hargaBaru !== "") {
         // Validasi BR2: Harga harus bilangan positif dalam ribuan
-        if (isNaN(hargaBaru) || parseInt(hargaBaru) <= 0 || parseInt(hargaBaru) % 1000 !== 0) {
+        if (isNaN(hargaBaru) || parseInt(hargaBaru) <= 0 || parseInt(hargaBaru) % 100 !== 0) {
             Swal.fire({
               icon: 'error',
               title: 'Harga Tidak Valid',
