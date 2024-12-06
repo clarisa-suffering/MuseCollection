@@ -24,7 +24,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             // Menambahkan stok ke detail_produk dengan id_ukuran
             $sqlDetail = "INSERT INTO detail_produk (id_barang, stok_gudang, id_ukuran) VALUES ('$id_barang', '$jumlah', '$id_ukuran')";
             if ($conn->query($sqlDetail) === TRUE) {
-                $success = true; // Tanda bahwa produk berhasil ditambahkan
+                // Ambil id_detprod yang baru ditambahkan dari detail_produk
+                $id_detprod = $conn->insert_id;
+
+                // Setelah produk berhasil ditambahkan, masukkan transaksi ke detail_laporan
+                $tanggal = date('Y-m-d'); // Tanggal hari ini
+                $status_in_out = "+"; // Status in (produk masuk)
+                $quantity = $jumlah; // Jumlah yang dimasukkan
+
+                // Query untuk memasukkan data ke detail_laporan
+                $sqlLaporan = "INSERT INTO detail_laporan (id_detprod, quantity, tanggal_in_out, status_in_out)
+                               VALUES ('$id_detprod', '$quantity', '$tanggal', '$status_in_out')";
+                if ($conn->query($sqlLaporan) === TRUE) {
+                    $success = true; // Tanda bahwa produk dan laporan berhasil ditambahkan
+                } else {
+                    $error = true; // Jika gagal memasukkan ke detail_laporan
+                    $error_message = "Gagal mencatat transaksi di detail_laporan.";
+                }
             } else {
                 $error = true; // Jika gagal memasukkan ke detail_produk
                 $error_message = "Gagal menambahkan detail produk.";
@@ -220,6 +236,9 @@ $resultUkuran = $conn->query($sqlUkuran);
         ukuran: true
     };
 
+    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
+    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
+
     // Mengambil elemen header yang bisa disortir
     const headers = document.querySelectorAll('table th');
 
@@ -244,9 +263,21 @@ $resultUkuran = $conn->query($sqlUkuran);
             const cellA = rowA.cells[columnIndex].textContent.trim();
             const cellB = rowB.cells[columnIndex].textContent.trim();
 
-            // Parsing angka untuk kolom harga dan stok
-            let valueA = isNaN(cellA) ? cellA : parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
-            let valueB = isNaN(cellB) ? cellB : parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+            // Parsing harga, ukuran, dan ID Barang untuk sorting yang benar
+            let valueA, valueB;
+            if (columnName === 'harga') {
+                valueA = parseFloat(cellA.replace(/[^0-9.-]+/g, "")); // Hapus simbol mata uang dan parse float
+                valueB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+            } else if (columnName === 'ukuran') {
+                valueA = ukuranOrder.indexOf(cellA); // Menyusun berdasarkan urutan ukuran
+                valueB = ukuranOrder.indexOf(cellB);
+            } else if (columnName === 'id_barang') {
+                valueA = parseInt(cellA); // ID Barang disortir secara numerik
+                valueB = parseInt(cellB);
+            } else {
+                valueA = cellA;
+                valueB = cellB;
+            }
 
             if (isAscending) {
                 return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
@@ -280,8 +311,3 @@ $resultUkuran = $conn->query($sqlUkuran);
 
 </body>
 </html>
-
-<?php
-// Menutup koneksi database
-$conn->close();
-?>
