@@ -1,16 +1,3 @@
-<?php
-session_set_cookie_params(0);
-
-session_start();  // Start the session
-
-// Check if the session variable 'role' exists and if it's one of the allowed roles
-if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSION['jabatan'] !== 'pemilik')) {
-    // Redirect to login page if not logged in as kasir or pemilik
-    header("Location: loginPage.php");
-    exit();
-}
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,6 +8,8 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* untuk hide table */
         .hidden {
@@ -29,10 +18,34 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
     </style>
 </head>
 <body>
-<div class="container mb-3">
-<div class="row justify-content-center">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"><i class="fas fa-store"></i> YANTO</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="fas fa-home"></i> Home</a></li>
+              <li class="nav-item"><a class="nav-link" href=""><i class="fas fa-box"></i> Product</a></li>
+              <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Price</a></li>
+              <li class="nav-item"><a class="nav-link" href=""><i class="fas fa-store-alt"></i> Stock Toko</a></li>
+              <li class="nav-item"><a class="nav-link" href=""><i class="fas fa-warehouse"></i> Stock Gudang</a></li>
+              <li class="nav-item"><a class="nav-link" href="halamanTransaksi.php"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+              <li class="nav-item"><a class="nav-link" href="MelihatAbsensiPage.php"><i class="fas fa-users"></i> Employee</a></li>
+              <li class="nav-item"><a class="nav-link" href="pageLaporan.php"><i class="fas fa-file-alt"></i> Laporan</a></li>
+              <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <div class="container mb-3 pt-6">
+        <div class="container text-center">
+    <h1>Transaksi</h1>
+    </div>
+    <div class="row justify-content-center">
     <!-- Pelanggan dan jenis transaksi -->
-    <div class="container mb-3">
+    <div class="container mb-3 pt-6">
         <input class="form-control mb-3" id="nama" type="text" placeholder="Nama" aria-label="Nama">
         <input class="form-control mb-3" id="alamat" type="text" placeholder="Alamat" aria-label="Alamat">
         <input class="form-control mb-3" id="nomorTelepon" type="number" placeholder="Nomor Telepon" aria-label="Nomor Telepon">
@@ -49,6 +62,7 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
                 PO
             </label>
         </div>
+    </div>
     </div>
 
     <!-- Input detail transaksi default hidden -->
@@ -137,18 +151,13 @@ $(document).ready(function() {
         var nomorTelepon = $('#nomorTelepon').val();
 
         if (kategori_penjualan === 'PO') {
-            if ((!nama || !alamat || !nomorTelepon) || !/^08[0-9]{8,13}$/.test(nomorTelepon)) {
+            if (!nama || !alamat || !nomorTelepon) {
                 Swal.fire({
                 icon: 'warning',
                 title: 'Input Tidak Lengkap',
-                text: 'Untuk transaksi PO, input semua data pelanggan (nama, alamat, dan nomor telepon) secara valid.',
-                }).then(() => {
-                    // Membuat kategori penjualan tidak tercentang
-                    $('input[name="kategori"]').prop('checked', false);
-                    $('#divDetail').addClass('hidden');
-                    });
-                    return false;
-                
+                text: 'Untuk transaksi PO, input semua data pelanggan (nama, alamat, dan nomor telepon).',
+                });
+                return false;
             }
         } else if (kategori_penjualan === 'retail') {
             if (!nama) {
@@ -156,11 +165,7 @@ $(document).ready(function() {
                 icon: 'warning',
                 title: 'Input Tidak Lengkap',
                 text: 'Untuk transaksi Non-PO, input nama.',
-                }).then(() => {
-                    // Membuat kategori penjualan tidak tercentang
-                    $('input[name="kategori"]').prop('checked', false);
-                    $('#divDetail').addClass('hidden');
-                    });
+                });
                 return false;
             }
         }
