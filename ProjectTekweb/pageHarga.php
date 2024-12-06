@@ -62,7 +62,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
             <div class="row mb-3 align-items-center">
               <label for="inputHarga" class="col-sm-3 col-form-label">Harga</label>
               <div class="col-sm-9">
-                  <input type="text" class="form-control" id="inputHarga">
+                  <input type="text" class="form-control" id="inputHarga" disabled>
               </div>
             </div>
             <button type="submit" id="btnEditHarga" class="btn btn-primary">Edit Harga</button>
