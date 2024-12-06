@@ -14,40 +14,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         $error = true;
         $error_message = "Harga dan Jumlah harus lebih besar dari 0.";
     } else {
-        // Query untuk menambah produk baru
-        $sql = "INSERT INTO produk (kode_barang, harga) VALUES ('$kode_barang', '$harga')";
-        
-        if ($conn->query($sql) === TRUE) {
-            // Ambil id_barang dari produk yang baru ditambahkan
-            $id_barang = $conn->insert_id;
+        // Cek apakah kode barang sudah ada di database
+        $sqlCheckKode = "SELECT * FROM produk WHERE kode_barang = '$kode_barang'";
+        $resultCheckKode = $conn->query($sqlCheckKode);
+
+        if ($resultCheckKode->num_rows > 0) {
+            // Jika kode barang sudah ada
+            $error = true;
+            $error_message = "Kode barang sudah terdaftar. Silakan masukkan kode barang yang lain.";
+        } else {
+            // Query untuk menambah produk baru
+            $sql = "INSERT INTO produk (kode_barang, harga) VALUES ('$kode_barang', '$harga')";
             
-            // Menambahkan stok ke detail_produk dengan id_ukuran
-            $sqlDetail = "INSERT INTO detail_produk (id_barang, stok_gudang, id_ukuran) VALUES ('$id_barang', '$jumlah', '$id_ukuran')";
-            if ($conn->query($sqlDetail) === TRUE) {
-                // Ambil id_detprod yang baru ditambahkan dari detail_produk
-                $id_detprod = $conn->insert_id;
-
-                // Setelah produk berhasil ditambahkan, masukkan transaksi ke detail_laporan
-                $tanggal = date('Y-m-d'); // Tanggal hari ini
-                $status_in_out = "+"; // Status in (produk masuk)
-                $quantity = $jumlah; // Jumlah yang dimasukkan
-
-                // Query untuk memasukkan data ke detail_laporan
-                $sqlLaporan = "INSERT INTO detail_laporan (id_detprod, quantity, tanggal_in_out, status_in_out)
-                               VALUES ('$id_detprod', '$quantity', '$tanggal', '$status_in_out')";
-                if ($conn->query($sqlLaporan) === TRUE) {
-                    $success = true; // Tanda bahwa produk dan laporan berhasil ditambahkan
+            if ($conn->query($sql) === TRUE) {
+                // Ambil id_barang dari produk yang baru ditambahkan
+                $id_barang = $conn->insert_id;
+                
+                // Menambahkan stok ke detail_produk dengan id_ukuran
+                $sqlDetail = "INSERT INTO detail_produk (id_barang, stok_gudang, id_ukuran) VALUES ('$id_barang', '$jumlah', '$id_ukuran')";
+                if ($conn->query($sqlDetail) === TRUE) {
+                    // Menambahkan data ke detail_laporan
+                    $tanggal = date('Y-m-d');  // Tanggal saat ini
+                    $status_in_out = "+";
+                    $sqlLaporan = "INSERT INTO detail_laporan (id_detprod, quantity, tanggal_in_out, status_in_out) 
+                                   VALUES ('$id_barang', '$jumlah', '$tanggal', '$status_in_out')";
+                    if ($conn->query($sqlLaporan) === TRUE) {
+                        $success = true; // Tanda bahwa produk berhasil ditambahkan
+                    } else {
+                        $error = true;
+                        $error_message = "Gagal menambahkan data ke laporan.";
+                    }
                 } else {
-                    $error = true; // Jika gagal memasukkan ke detail_laporan
-                    $error_message = "Gagal mencatat transaksi di detail_laporan.";
+                    $error = true;
+                    $error_message = "Gagal menambahkan detail produk.";
                 }
             } else {
-                $error = true; // Jika gagal memasukkan ke detail_produk
-                $error_message = "Gagal menambahkan detail produk.";
+                $error = true;
+                $error_message = "Gagal menambahkan produk.";
             }
-        } else {
-            $error = true; // Jika gagal memasukkan ke produk
-            $error_message = "Gagal menambahkan produk.";
         }
     }
 }
@@ -227,72 +231,6 @@ $resultUkuran = $conn->query($sqlUkuran);
         document.getElementById('productModal').style.display = 'none';
     });
 
-    // Mengatur flag untuk arah sorting
-    let sortAsc = {
-        id_barang: true,
-        kode_barang: true,
-        harga: true,
-        stok: true,
-        ukuran: true
-    };
-
-    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
-    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
-
-    // Mengambil elemen header yang bisa disortir
-    const headers = document.querySelectorAll('table th');
-
-    headers.forEach(header => {
-        header.addEventListener('click', function() {
-            const columnIndex = Array.from(header.parentNode.children).indexOf(header);
-            const columnName = header.id.replace('sort', '').toLowerCase();
-            sortTable(columnIndex, columnName);
-        });
-    });
-
-    // Fungsi untuk sorting tabel
-    function sortTable(columnIndex, columnName) {
-        const table = document.getElementById('productTable');
-        const rows = Array.from(table.rows).slice(1); // Mengambil semua baris kecuali header
-
-        // Menentukan apakah urutan akan menaik atau menurun
-        const isAscending = sortAsc[columnName];
-
-        // Sorting berdasarkan kolom yang diklik
-        rows.sort((rowA, rowB) => {
-            const cellA = rowA.cells[columnIndex].textContent.trim();
-            const cellB = rowB.cells[columnIndex].textContent.trim();
-
-            // Parsing harga, ukuran, dan ID Barang untuk sorting yang benar
-            let valueA, valueB;
-            if (columnName === 'harga') {
-                valueA = parseFloat(cellA.replace(/[^0-9.-]+/g, "")); // Hapus simbol mata uang dan parse float
-                valueB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
-            } else if (columnName === 'ukuran') {
-                valueA = ukuranOrder.indexOf(cellA); // Menyusun berdasarkan urutan ukuran
-                valueB = ukuranOrder.indexOf(cellB);
-            } else if (columnName === 'id_barang') {
-                valueA = parseInt(cellA); // ID Barang disortir secara numerik
-                valueB = parseInt(cellB);
-            } else {
-                valueA = cellA;
-                valueB = cellB;
-            }
-
-            if (isAscending) {
-                return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
-            } else {
-                return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
-            }
-        });
-
-        // Menyusun ulang baris tabel
-        rows.forEach(row => table.appendChild(row));
-
-        // Toggle arah sorting
-        sortAsc[columnName] = !isAscending;
-    }
-
     // SweetAlert untuk success atau error setelah simpan produk
     <?php if (isset($success) && $success === true): ?>
         Swal.fire({
@@ -311,3 +249,8 @@ $resultUkuran = $conn->query($sqlUkuran);
 
 </body>
 </html>
+
+<?php
+// Menutup koneksi database
+$conn->close();
+?>
