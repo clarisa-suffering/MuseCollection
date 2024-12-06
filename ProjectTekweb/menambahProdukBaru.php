@@ -93,6 +93,10 @@ $resultUkuran = $conn->query($sqlUkuran);
         }
         table th {
             background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        table th:hover {
+            background-color: #e0e0e0;
         }
         .btn {
             background-color: #007bff;
@@ -142,14 +146,14 @@ $resultUkuran = $conn->query($sqlUkuran);
     
     <!-- Daftar Produk -->
     <?php if ($resultProduk->num_rows > 0): ?>
-        <table>
+        <table id="productTable">
             <thead>
                 <tr>
-                    <th>ID Barang</th>
-                    <th>Kode Barang</th>
-                    <th>Harga</th>
-                    <th>Stok Gudang</th>
-                    <th>Ukuran</th>
+                    <th id="sortIdBarang">ID Barang</th>
+                    <th id="sortKodeBarang">Kode Barang</th>
+                    <th id="sortHarga">Harga</th>
+                    <th id="sortStok">Stok Gudang</th>
+                    <th id="sortUkuran">Ukuran</th>
                 </tr>
             </thead>
             <tbody>
@@ -197,15 +201,66 @@ $resultUkuran = $conn->query($sqlUkuran);
 </div>
 
 <script>
-    // Menampilkan modal saat tombol "Tambah Produk" ditekan
+    // Menangani tombol "Tambah Produk"
     document.getElementById('addProductBtn').addEventListener('click', function() {
         document.getElementById('productModal').style.display = 'flex';
     });
-    
-    // Menutup modal saat tombol "Tutup" ditekan
+
+    // Menangani tombol "Tutup" untuk modal
     document.getElementById('closeModalBtn').addEventListener('click', function() {
         document.getElementById('productModal').style.display = 'none';
     });
+
+    // Mengatur flag untuk arah sorting
+    let sortAsc = {
+        id_barang: true,
+        kode_barang: true,
+        harga: true,
+        stok: true,
+        ukuran: true
+    };
+
+    // Mengambil elemen header yang bisa disortir
+    const headers = document.querySelectorAll('table th');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+            const columnName = header.id.replace('sort', '').toLowerCase();
+            sortTable(columnIndex, columnName);
+        });
+    });
+
+    // Fungsi untuk sorting tabel
+    function sortTable(columnIndex, columnName) {
+        const table = document.getElementById('productTable');
+        const rows = Array.from(table.rows).slice(1); // Mengambil semua baris kecuali header
+
+        // Menentukan apakah urutan akan menaik atau menurun
+        const isAscending = sortAsc[columnName];
+
+        // Sorting berdasarkan kolom yang diklik
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+
+            // Parsing angka untuk kolom harga dan stok
+            let valueA = isNaN(cellA) ? cellA : parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
+            let valueB = isNaN(cellB) ? cellB : parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+
+            if (isAscending) {
+                return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+                return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+        });
+
+        // Menyusun ulang baris tabel
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle arah sorting
+        sortAsc[columnName] = !isAscending;
+    }
 
     // SweetAlert untuk success atau error setelah simpan produk
     <?php if (isset($success) && $success === true): ?>
