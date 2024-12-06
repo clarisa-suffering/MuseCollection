@@ -129,16 +129,18 @@
                     title: 'Sukses',
                     text: 'Login berhasil.',
                 }).then(() => {
-                    window.location.href = 'dashboard.php';
+                    // Redirect after the modal is closed
+                    window.location.href = 'dashboard.php'; // Redirect to dashboard
                 });
             } else {
+                // Reset fields
                 usernameField.value = '';
                 passwordField.value = '';
 
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Username atau password salah.',
+                icon: 'error',
+                title: 'Error',
+                text: 'Username atau password salah.',
                 });
             }
         });
