@@ -44,18 +44,41 @@ function cekStokGudang($id_detprod) {
 }
 
 // Fungsi untuk menambahkan stok ke gudang
+// Fungsi untuk menambahkan stok ke gudang dan mencatat di detail_laporan
 function tambahStokGudang($id_detprod, $jumlah) {
     global $conn;
 
-    // Tambahkan stok ke gudang
-    $query_update_gudang = "UPDATE detail_produk SET stok_gudang = stok_gudang + ? WHERE id_detprod = ?";
-    $stmt = $conn->prepare($query_update_gudang);
-    $stmt->bind_param("ii", $jumlah, $id_detprod);
-    $stmt->execute();
-    $stmt->close();
+    // Mulai transaksi
+    $conn->begin_transaction();
 
-    return true; // Stok berhasil ditambahkan
+    try {
+        // Tambahkan stok ke gudang
+        $query_update_gudang = "UPDATE detail_produk SET stok_gudang = stok_gudang + ? WHERE id_detprod = ?";
+        $stmt = $conn->prepare($query_update_gudang);
+        $stmt->bind_param("ii", $jumlah, $id_detprod);
+        $stmt->execute();
+        $stmt->close();
+
+        // Catat ke detail_laporan
+        $query_insert_laporan = "INSERT INTO detail_laporan (id_detprod, quantity, status_in_out, tanggal_in_out) 
+                                 VALUES (?, ?, ?, NOW())";
+        $status_in_out = 'IN'; // Karena stok bertambah
+        $stmt = $conn->prepare($query_insert_laporan);
+        $stmt->bind_param("iis", $id_detprod, $jumlah, $status_in_out);
+        $stmt->execute();
+        $stmt->close();
+
+        // Commit transaksi
+        $conn->commit();
+
+        return true; // Stok berhasil ditambahkan dan tercatat
+    } catch (Exception $e) {
+        // Rollback transaksi jika ada kesalahan
+        $conn->rollback();
+        return false; // Gagal
+    }
 }
+
 
 // Proses jika form dikirim
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
