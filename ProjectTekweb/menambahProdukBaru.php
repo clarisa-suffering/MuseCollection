@@ -231,6 +231,72 @@ $resultUkuran = $conn->query($sqlUkuran);
         document.getElementById('productModal').style.display = 'none';
     });
 
+    // Mengatur flag untuk arah sorting
+    let sortAsc = {
+        id_barang: true,
+        kode_barang: true,
+        harga: true,
+        stok: true,
+        ukuran: true
+    };
+
+    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
+    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
+
+    // Mengambil elemen header yang bisa disortir
+    const headers = document.querySelectorAll('table th');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+            const columnName = header.id.replace('sort', '').toLowerCase();
+            sortTable(columnIndex, columnName);
+        });
+    });
+
+    // Fungsi untuk sorting tabel
+    function sortTable(columnIndex, columnName) {
+        const table = document.getElementById('productTable');
+        const rows = Array.from(table.rows).slice(1); // Mengambil semua baris kecuali header
+
+        // Menentukan apakah urutan akan menaik atau menurun
+        const isAscending = sortAsc[columnName];
+
+        // Sorting berdasarkan kolom yang diklik
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+
+            // Parsing harga, ukuran, dan ID Barang untuk sorting yang benar
+            let valueA, valueB;
+            if (columnName === 'harga') {
+                valueA = parseFloat(cellA.replace(/[^0-9.-]+/g, "")); // Hapus simbol mata uang dan parse float
+                valueB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+            } else if (columnName === 'ukuran') {
+                valueA = ukuranOrder.indexOf(cellA); // Menyusun berdasarkan urutan ukuran
+                valueB = ukuranOrder.indexOf(cellB);
+            } else if (columnName === 'id_barang') {
+                valueA = parseInt(cellA); // ID Barang disortir secara numerik
+                valueB = parseInt(cellB);
+            } else {
+                valueA = cellA;
+                valueB = cellB;
+            }
+
+            if (isAscending) {
+                return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+                return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+        });
+
+        // Menyusun ulang baris tabel
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle arah sorting
+        sortAsc[columnName] = !isAscending;
+    }
+
     // SweetAlert untuk success atau error setelah simpan produk
     <?php if (isset($success) && $success === true): ?>
         Swal.fire({
@@ -249,8 +315,3 @@ $resultUkuran = $conn->query($sqlUkuran);
 
 </body>
 </html>
-
-<?php
-// Menutup koneksi database
-$conn->close();
-?>
