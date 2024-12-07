@@ -1,3 +1,4 @@
+
 <?php
 session_set_cookie_params(0);
 
@@ -28,7 +29,6 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
         .hidden {
             display: none;
         }
-         /* Navbar */
          .navbar {
             width: 100%;
             margin: 0;
@@ -98,9 +98,9 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }
@@ -121,10 +121,10 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
                     border-radius: 5px;
         }
         html, body {
-            height: 100%; /* Mengatur tinggi html dan body menjadi 100% */
-            margin: 0; /* Menghilangkan margin default */
-            display: flex; /* Menggunakan flexbox */
-            flex-direction: column; /* Mengatur arah flex menjadi kolom */
+            height: 100%; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
         }
 
         footer {
@@ -133,17 +133,17 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
             text-align: center;
             padding: 20px 0;
             width: 100%;
-            margin-top: auto; /* Agar footer tetap di bawah */
-            position: relative; /* Agar tidak terpengaruh modal */
-            z-index: 1; /* Membuat footer berada di bawah modal */
+            margin-top: auto;
+            position: relative; 
+            z-index: 1; 
         }
 
         .container {
-            flex: 1 0 auto; /* Memastikan konten utama berada di atas dan tidak tumpang tindih dengan footer */
+            flex: 1 0 auto; 
         }
 
         .modal {
-            z-index: 1050; /* SweetAlert modal memiliki z-index lebih tinggi dari konten */
+            z-index: 1050; 
         }
 
 
@@ -406,13 +406,14 @@ $(document).ready(function() {
                             if (harga > 0) {
                                 var subtotal = hitungSubtotal(jumlah, harga);
 
-                                
+                                var hargaFormatted = new Intl.NumberFormat('id-ID').format(harga);
+                                var subtotalFormatted= new Intl.NumberFormat('id-ID').format(subtotal);
                                 var row = `<tr>
                                     <td>${kodeProduk}</td>
                                     <td>${ukuran}</td>
                                     <td>${jumlah}</td>
-                                    <td>${harga}</td>
-                                    <td>${subtotal}</td>
+                                    <td>${hargaFormatted}</td>
+                                    <td>${subtotalFormatted}</td>
                                 </tr>`;
 
                                 $('#tblProduk').append(row);
@@ -478,16 +479,19 @@ $(document).ready(function() {
     }
 
 // hitung total
-    function hitungTotal() {
-        var total_harga = 0;
-        $('#tblProduk tr').each(function() {
-            var subtotal = parseFloat($(this).find('td').eq(4).text());
-            if (!isNaN(subtotal)) {
-                total_harga += subtotal;
-            }
-        });
-        $('#hargatotal').val(total_harga);
-    }
+function hitungTotal() {
+    var total_harga = 0;
+    $('#tblProduk tr').each(function() {
+        var subtotalText = $(this).find('td').eq(4).text(); // Ambil teks subtotal
+        var subtotal = parseFloat(subtotalText.replace(/\./g, '')); // Hapus pemisah ribuan
+        if (!isNaN(subtotal)) {
+            total_harga += subtotal;
+        }
+    });
+    // Format total harga sebelum menampilkan
+    var totalFormatted = new Intl.NumberFormat('id-ID').format(total_harga);
+    $('#hargatotal').val(totalFormatted);
+}
 
 // konfirmasi transaksi
 $('#btnKonfirmasiTransaksi').on('click', function() {
@@ -517,7 +521,8 @@ $('#btnKonfirmasiTransaksi').on('click', function() {
         var kodeProduk = $(this).find('td').eq(0).text();
         var ukuran = $(this).find('td').eq(1).text();
         var jumlah = $(this).find('td').eq(2).text();
-        var subtotal = $(this).find('td').eq(4).text();
+        var subtotalText = $(this).find('td').eq(4).text();
+        var subtotal = parseFloat(subtotalText.replace(/\./g, ''));
 
         totalRequests++;
 
@@ -562,7 +567,8 @@ $('#btnKonfirmasiTransaksi').on('click', function() {
 });
 
 function mengurangiStok(nama, alamat, nomorTelepon, kategori_penjualan, details) {
-    var harga_total = $('#hargatotal').val();
+    var hargaTotalText = $('#hargatotal').val();
+    var harga_total = parseFloat(hargaTotalText.replace(/\./g, ''));
 
     $.ajax({
         url: 'mengurangiStok.php',

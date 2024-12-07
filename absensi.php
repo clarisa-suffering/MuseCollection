@@ -64,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 
     <style>
-      /* Navbar */
       .navbar {
             width: 100%;
             margin: 0;
@@ -104,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -134,9 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D; 
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }
@@ -156,8 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     background-color: #ff0000;
                     border-radius: 5px;
         }
-
-
         </style>
 </head>
 <body>

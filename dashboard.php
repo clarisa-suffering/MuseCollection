@@ -1,7 +1,3 @@
-<?php
-    $title = "dashboard";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,103 +10,106 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    main {
-      flex: 1;
-    }
-    footer {
-      background-color: #332D2D; /* Warna latar belakang footer */
-      color: white; /* Warna teks footer */
-    }
-     /* Navbar */
-     .navbar {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #343a40;
+      html, body {
+          height: 100%;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
+        main {
+          flex: 1;
+        }
+
+        footer {
+          background-color: #332D2D;
+          color: white;
+        }
+
+        .navbar {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          background-color: #343a40; 
         }
 
         .navbar .container-fluid {
-            max-width: 100%;
-            padding: 0;
+          max-width: 100%;
+          padding: 0;
         }
 
         .navbar-brand {
-            color: white;
-            font-size: 1.5rem;
+          color: white;
+          font-size: 1.5rem;
         }
 
         .navbar-nav {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
         }
 
         .navbar-nav .nav-item {
-            list-style: none;
+          list-style: none;
         }
 
         .navbar-nav .nav-item .nav-link {
-            color: white;
-            padding: 15px 20px;
-            display: block;
-            text-align: center;
+          color: white;
+          padding: 15px 20px;
+          display: block;
+          text-align: center;
         }
+
         .navbar-nav .nav-item1 .nav-link {
-            color: white;
-            padding: 15px 20px;
-            display: block;
-            text-align: center;
+          color: white;
+          padding: 15px 20px;
+          display: block;
+          text-align: center;
         }
+
         .navbar-nav .nav-item1 .nav-link:hover {
-                    background-color: #ff0000;
-                    border-radius: 5px;
+          background-color: #ff0000;
+          border-radius: 5px;
         }
 
         .navbar-nav .nav-item .nav-link:hover {
-            background-color: #007bff;
-            border-radius: 5px;
+          background-color: #007bff;
+          border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
-            left: 0;
-            right: auto;
+          left: 0;
+          right: auto;
         }
 
         .dropdown-submenu {
-            position: relative;
+          position: relative;
         }
 
         .dropdown-submenu .dropdown-menu {
-            display: none;
-            position: absolute;
-            left: 100%;
-            top: 0;
+          display: none;
+          position: absolute;
+          left: 100%;
+          top: 0;
         }
 
         .dropdown-submenu:hover .dropdown-menu {
-            display: block;
+          display: block;
         }
 
         .dropdown-item {
-            color: #333;
-            padding: 10px 20px;
+          color: #333;
+          padding: 10px 20px;
         }
 
         .dropdown-item:hover {
-            background-color: #f8f9fa;
+          background-color: #f8f9fa;
         }
-
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <!-- Navbar dan konten lainnya -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,17 +155,19 @@
             </ul>
         </div>
     </div>
-</nav> 
-<main>
-  <div class="text-center">
-    <h1>MAIN PAGE</h1>
-  </div>
-</main>
-<footer class="text-center py-3">
-  <div class="container">
-    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
-    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
-  </div>
-</footer>
+</nav>
+
+  <main>
+    <div class="text-center">
+      <h1>MAIN PAGE</h1>
+    </div>
+  </main>
+
+  <footer class="text-center py-3">
+    <div class="container">
+      <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
+      <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+    </div>
+  </footer>
 </body>
 </html>

@@ -155,7 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -219,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         input[type="submit"] {
             width: 100%;
             padding: 14px;
-            background-color: #007bff;  /* Tombol berwarna biru */
+            background-color: #007bff;  
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -229,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         input[type="submit"]:hover {
-            background-color: #0056b3;  /* Warna biru tua saat hover */
+            background-color: #0056b3; 
         }
 
         .notification {
@@ -264,9 +263,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D; 
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }

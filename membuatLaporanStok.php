@@ -363,7 +363,6 @@ $resultLaporan = $conn->query($sqlLaporan);
             <table>
                 <thead>
                     <tr>
-                        <th>ID Barang</th>
                         <th>Kode Barang</th>
                         <th>Tanggal</th>
                         <th>Jumlah</th>
@@ -373,7 +372,6 @@ $resultLaporan = $conn->query($sqlLaporan);
                 <tbody>
                     <?php while ($row = $resultLaporan->fetch_assoc()): ?>
                         <tr>
-                            <td><?= $row['id_barang'] ?></td>
                             <td><?= $row['kode_barang'] ?></td>
                             <td><?= date('d-m-Y', strtotime($row['tanggal_in_out'])) ?></td>
                             <td><?= abs($row['quantity']) ?></td>

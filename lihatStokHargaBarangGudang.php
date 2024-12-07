@@ -53,12 +53,11 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* Styling untuk tema biru */
        
         h1 {
             text-align: center;
             margin-top: 30px;
-            color: black; /* Mengubah warna tulisan menjadi hitam */
+            color: black; 
         }
 
         .container {
@@ -89,25 +88,25 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
         }
 
         .btn-custom {
-            padding: 10px; /* Mengatur padding tombol */
-            font-size: 16px; /* Mengatur ukuran font */
-            color: white; /* Warna teks putih */
-            background-color: #007bff; /* Warna biru */
-            border: none; /* Menghapus border default */
-            border-radius: 4px; /* Sudut sedikit melengkung */
-            cursor: pointer; /* Mengubah cursor menjadi pointer saat hover */
-            transition: background-color 0.3s ease; /* Transisi halus saat hover */
-            width: 100%; /* Memperpanjang tombol sepanjang container */
+            padding: 10px;
+            font-size: 16px; 
+            color: white; 
+            background-color: #007bff; 
+            border: none; 
+            border-radius: 4px;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+            width: 100%;
         }
 
         .btn-custom:hover {
-            background-color: #0056b3; /* Warna biru tua saat hover */
+            background-color: #0056b3;
         }
 
         .button-container {
             display: flex;
-            justify-content: center; /* Memusatkan tombol secara horizontal */
-            margin-top: 20px; /* Jarak atas dari container */
+            justify-content: center; 
+            margin-top: 20px;
         }
 
         table {
@@ -118,10 +117,10 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
         table th, table td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: left;
+            text-align: center;
         }
         table th {
-            background-color: #f2f2f2;
+            background-color: #808080;
             cursor: pointer;
         }
         table th:hover {
@@ -144,7 +143,7 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
             background-color: #dc3545;
             color: white;
         }
-         /* Navbar */
+
          .navbar {
             width: 100%;
             margin: 0;
@@ -184,7 +183,6 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -214,9 +212,9 @@ function lihatStokHargaBarangGudang($kode_barang = null) {
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D; 
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }

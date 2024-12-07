@@ -60,12 +60,12 @@
                 echo "<td>" . htmlspecialchars($row['kode_barang']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['ukuran']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['harga_satuan']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['subtotal']) . "</td>";
+                echo "<td>" . number_format($row['harga_satuan'], 0, ',', '.') . "</td>";
+                echo "<td>" . number_format($row['subtotal'], 0, ',', '.') . "</td>";
 
                 // Menampilkan harga_total hanya pada baris pertama
                 if ($current_transaksi === $id_transaksi && $counter <= 1) {
-                    echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . htmlspecialchars($row['harga_total']) . "</td>";
+                    echo "<td rowspan='$row_count' style='vertical-align: middle; text-align: center;'>" . number_format($row['harga_total'], 0, ',', '.') . "</td>";
                 }
                 $counter++;
             }

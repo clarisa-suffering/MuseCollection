@@ -74,7 +74,6 @@ $result = $conn->query($query);
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -104,9 +103,9 @@ $result = $conn->query($query);
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }

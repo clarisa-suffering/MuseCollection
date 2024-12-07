@@ -5,8 +5,8 @@ session_set_cookie_params(0);
 session_start();  // Start the session
 
 // Check if the session variable 'role' exists and if it's one of the allowed roles
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
-    // Redirect to login page if not logged in as penjaga gudangz or pemilik
+if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
+    // Redirect to login page if not logged in as pemilik
     header("Location: loginPage.php");
     exit();
 }
@@ -66,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 }
 
+
 // Query untuk menampilkan daftar produk
-$sqlProduk = "SELECT 
-                p.id_barang,
+$sqlProduk = "SELECT
                 p.kode_barang,
                 p.harga,
                 dp.stok_gudang,
@@ -350,27 +350,26 @@ $resultUkuran = $conn->query($sqlUkuran);
     <!-- Daftar Produk -->
     <?php if ($resultProduk->num_rows > 0): ?>
         <table id="productTable">
-            <thead>
-                <tr>
-                    <th id="sortIdBarang">ID Barang</th>
-                    <th id="sortKodeBarang">Kode Barang</th>
-                    <th id="sortHarga">Harga</th>
-                    <th id="sortStok">Stok Gudang</th>
-                    <th id="sortUkuran">Ukuran</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $resultProduk->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $row['id_barang'] ?></td>
-                        <td><?= $row['kode_barang'] ?></td>
-                        <td><?= number_format($row['harga'], 2) ?></td>
-                        <td><?= $row['stok_gudang'] ?></td>
-                        <td><?= $row['ukuran'] ?></td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+    <thead>
+        <tr>
+            <th id="sortKodeBarang">Kode Barang</th>
+            <th id="sortUkuran">Ukuran</th>
+            <th id="sortStok">Stok Gudang</th>
+            <th id="sortHarga">Harga</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php while ($row = $resultProduk->fetch_assoc()): ?>
+            <tr>
+                <td><?= $row['kode_barang'] ?></td>
+                <td><?= $row['ukuran'] ?></td>
+                <td><?= $row['stok_gudang'] ?></td>
+                <td><?= number_format($row['harga'], 0, ',', '.') ?></td>
+            </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
+
     <?php else: ?>
         <p>Tidak ada produk yang tersedia.</p>
     <?php endif; ?>
@@ -384,7 +383,7 @@ $resultUkuran = $conn->query($sqlUkuran);
             <label for="kode_barang">Kode Barang:</label>
             <input type="text" id="kode_barang" name="kode_barang" required>
             
-            <label for="harga">Harga:</label>
+            <label for="harga">Harga (min 1000):</label>
             <input type="number" id="harga" name="harga" required>
             
             <label for="jumlah">Stok Gudang:</label>
@@ -496,6 +495,25 @@ $resultUkuran = $conn->query($sqlUkuran);
             text: '<?= isset($error_message) ? $error_message : "Terjadi kesalahan." ?>',
         });
     <?php endif; ?>
+    document.querySelector('form').onsubmit = function(e) {
+        let harga = document.getElementById('harga').value;
+        if (harga < 1000) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus lebih dari 1000!',
+            });
+        }
+        if (harga % 100 !== 0) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus dalam ribu rupiah! (misal: 1250 (x), 1200 (v))',
+            });
+        }
+    };
 </script>
 <footer class="text-center py-3">
   <div class="container1">

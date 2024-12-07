@@ -106,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memindah Stok Barang ke Toko</title>
@@ -392,7 +393,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo '</div>';
                 echo '</form>';
             } else {
-                echo "<div class='notification error'>Produk dengan kode barang '$kode_barang' tidak ditemukan.</div>";
+                echo "<script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Kode barang tidak ditemukan.'
+                    });
+                </script>";
             }
         }
         ?>

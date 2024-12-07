@@ -28,6 +28,18 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 </head>
 
 <style>
+    #laporanTable thead th {
+        background-color: #f2f2f2; 
+        color: #333;         
+        font-weight: bold; 
+        text-align: center;
+        border-bottom: 2px solid #ddd;
+    }
+
+    #laporanTable thead th:hover {
+        background-color: #e0e0e0;
+    }
+
     table th, table td {
         padding: 10px;
         text-align: left;
@@ -103,18 +115,21 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
         .dropdown-item:hover {
             background-color: #f8f9fa;
         }
-        footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
-            padding: 20px 0;
-            width: 100%;
-        }
         html, body {
-            height: 100%;
+            height: 100%; 
             margin: 0;
             display: flex;
             flex-direction: column;
+        }
+
+        footer {
+            background-color: #332D2D;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            margin-top: auto; /* Memaksa footer selalu di bawah */
+            flex-shrink: 0; /* Menjaga footer agar tidak mengecil */
         }
         .navbar-nav .nav-item1 .nav-link {
             color: white;
@@ -203,7 +218,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 
 <!-- TABEL LAPORAN -->
 <div class="container mt-4">
-    <table class="table table-bordered mx-auto" style="width: auto;">
+    <table id="laporanTable" class="table table-bordered mx-auto" style="width: auto;">
         <thead>
             <tr>
                 <th>Timestamp Transaksi</th>

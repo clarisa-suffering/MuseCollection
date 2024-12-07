@@ -37,7 +37,6 @@ if ($search) {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-    /* Navbar */
     .navbar {
             width: 100%;
             margin: 0;
@@ -77,7 +76,6 @@ if ($search) {
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -107,9 +105,9 @@ if ($search) {
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }
