@@ -406,13 +406,14 @@ $(document).ready(function() {
                             if (harga > 0) {
                                 var subtotal = hitungSubtotal(jumlah, harga);
 
-                                
+                                var hargaFormatted = new Intl.NumberFormat('id-ID').format(harga);
+                                var subtotalFormatted= new Intl.NumberFormat('id-ID').format(subtotal);
                                 var row = `<tr>
                                     <td>${kodeProduk}</td>
                                     <td>${ukuran}</td>
                                     <td>${jumlah}</td>
-                                    <td>${harga}</td>
-                                    <td>${subtotal}</td>
+                                    <td>${hargaFormatted}</td>
+                                    <td>${subtotalFormatted}</td>
                                 </tr>`;
 
                                 $('#tblProduk').append(row);
@@ -478,16 +479,19 @@ $(document).ready(function() {
     }
 
 // hitung total
-    function hitungTotal() {
-        var total_harga = 0;
-        $('#tblProduk tr').each(function() {
-            var subtotal = parseFloat($(this).find('td').eq(4).text());
-            if (!isNaN(subtotal)) {
-                total_harga += subtotal;
-            }
-        });
-        $('#hargatotal').val(total_harga);
-    }
+function hitungTotal() {
+    var total_harga = 0;
+    $('#tblProduk tr').each(function() {
+        var subtotalText = $(this).find('td').eq(4).text(); // Ambil teks subtotal
+        var subtotal = parseFloat(subtotalText.replace(/\./g, '')); // Hapus pemisah ribuan
+        if (!isNaN(subtotal)) {
+            total_harga += subtotal;
+        }
+    });
+    // Format total harga sebelum menampilkan
+    var totalFormatted = new Intl.NumberFormat('id-ID').format(total_harga);
+    $('#hargatotal').val(totalFormatted);
+}
 
 // konfirmasi transaksi
 $('#btnKonfirmasiTransaksi').on('click', function() {
@@ -517,7 +521,8 @@ $('#btnKonfirmasiTransaksi').on('click', function() {
         var kodeProduk = $(this).find('td').eq(0).text();
         var ukuran = $(this).find('td').eq(1).text();
         var jumlah = $(this).find('td').eq(2).text();
-        var subtotal = $(this).find('td').eq(4).text();
+        var subtotalText = $(this).find('td').eq(4).text();
+        var subtotal = parseFloat(subtotalText.replace(/\./g, ''));
 
         totalRequests++;
 
@@ -562,7 +567,8 @@ $('#btnKonfirmasiTransaksi').on('click', function() {
 });
 
 function mengurangiStok(nama, alamat, nomorTelepon, kategori_penjualan, details) {
-    var harga_total = $('#hargatotal').val();
+    var hargaTotalText = $('#hargatotal').val();
+    var harga_total = parseFloat(hargaTotalText.replace(/\./g, ''));
 
     $.ajax({
         url: 'mengurangiStok.php',
