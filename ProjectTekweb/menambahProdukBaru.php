@@ -1,15 +1,15 @@
 <?php
 include 'koneksi.php';
-session_set_cookie_params(0);
+// session_set_cookie_params(0);
 
-session_start();  // Start the session
+// session_start();  // Start the session
 
-// Check if the session variable 'role' exists and if it's one of the allowed roles
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
-    // Redirect to login page if not logged in as penjaga gudangz or pemilik
-    header("Location: loginPage.php");
-    exit();
-}
+// // Check if the session variable 'role' exists and if it's one of the allowed roles
+// if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
+//     // Redirect to login page if not logged in as penjaga gudangz or pemilik
+//     header("Location: loginPage.php");
+//     exit();
+// }
 
 // Fungsi untuk menambah produk baru
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
@@ -353,18 +353,18 @@ $resultUkuran = $conn->query($sqlUkuran);
     <thead>
         <tr>
             <th id="sortKodeBarang">Kode Barang</th>
-            <th id="sortHarga">Harga</th>
-            <th id="sortStok">Stok Gudang</th>
             <th id="sortUkuran">Ukuran</th>
+            <th id="sortStok">Stok Gudang</th>
+            <th id="sortHarga">Harga</th>
         </tr>
     </thead>
     <tbody>
         <?php while ($row = $resultProduk->fetch_assoc()): ?>
             <tr>
                 <td><?= $row['kode_barang'] ?></td>
-                <td><?= "Rp. " . number_format($row['harga'], 0, ',', '.') ?></td>
-                <td><?= $row['stok_gudang'] ?></td>
                 <td><?= $row['ukuran'] ?></td>
+                <td><?= $row['stok_gudang'] ?></td>
+                <td><?= number_format($row['harga'], 0, ',', '.') ?></td>
             </tr>
         <?php endwhile; ?>
     </tbody>
@@ -383,7 +383,7 @@ $resultUkuran = $conn->query($sqlUkuran);
             <label for="kode_barang">Kode Barang:</label>
             <input type="text" id="kode_barang" name="kode_barang" required>
             
-            <label for="harga">Harga (min 100):</label>
+            <label for="harga">Harga (min 1000):</label>
             <input type="number" id="harga" name="harga" required>
             
             <label for="jumlah">Stok Gudang:</label>
@@ -497,12 +497,20 @@ $resultUkuran = $conn->query($sqlUkuran);
     <?php endif; ?>
     document.querySelector('form').onsubmit = function(e) {
         let harga = document.getElementById('harga').value;
-        if (harga < 100) {
+        if (harga < 1000) {
             e.preventDefault(); // Mencegah form dikirim
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Harga harus lebih dari 100!',
+                text: 'Harga harus lebih dari 1000!',
+            });
+        }
+        if (harga % 100 !== 0) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus dalam ribu rupiah! (misal: 1250 (x), 1200 (v))',
             });
         }
     };
