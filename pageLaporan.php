@@ -28,6 +28,18 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 </head>
 
 <style>
+    #laporanTable thead th {
+        background-color: #f2f2f2; 
+        color: #333;         
+        font-weight: bold; 
+        text-align: center;
+        border-bottom: 2px solid #ddd;
+    }
+
+    #laporanTable thead th:hover {
+        background-color: #e0e0e0;
+    }
+
     table th, table td {
         padding: 10px;
         text-align: left;
@@ -203,7 +215,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 
 <!-- TABEL LAPORAN -->
 <div class="container mt-4">
-    <table class="table table-bordered mx-auto" style="width: auto;">
+    <table id="laporanTable" class="table table-bordered mx-auto" style="width: auto;">
         <thead>
             <tr>
                 <th>Timestamp Transaksi</th>
