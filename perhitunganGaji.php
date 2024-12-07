@@ -221,42 +221,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f8f9fa;
         }
         html, body {
-            height: 100%; /* Mengatur tinggi html dan body 100% */
-            margin: 0; /* Menghilangkan margin default */
-            display: flex; /* Menggunakan flexbox */
-            flex-direction: column; /* Mengatur arah flex menjadi kolom */
-        }
+    height: 100%; /* Mengatur tinggi html dan body 100% */
+    margin: 0; /* Menghilangkan margin default */
+    display: flex; /* Menggunakan flexbox */
+    flex-direction: column; /* Mengatur arah flex menjadi kolom */
+}
 
-        .container {
-            flex: 1; /* Membuat container mengambil sisa ruang */
-        }
+.container {
+    flex: 1; /* Membuat container mengambil sisa ruang */
+    overflow-y: auto; /* Mengaktifkan scroll jika konten lebih tinggi dari kontainer */
+    padding-bottom: 60px; /* Memberikan ruang agar konten tidak terhalang footer */
+}
 
-        footer {
-            position: fixed; /* Mengatur posisi footer tetap */
-            left: 0; /* Mengatur posisi kiri */
-            bottom: 0; /* Mengatur posisi bawah */
-            width: 100%; /* Mengatur lebar footer 100% */
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            text-align: center; /* Menyelaraskan teks ke tengah */
-            padding: 20px 0; /* Padding atas dan bawah */
-            z-index: 1000; /* Pastikan footer di atas elemen lain */
-        }
-        .navbar-nav .nav-item1 .nav-link {
-            color: white;
-            padding: 15px 20px;
-            display: block;
-            text-align: center;
-        }
-        .navbar-nav .nav-item1 .nav-link:hover {
-                    background-color: #ff0000;
-                    border-radius: 5px;
-        }
+footer {
+    position: sticky; /* Mengatur posisi footer tetap */
+    left: 0; /* Mengatur posisi kiri */
+    bottom: 0; /* Mengatur posisi bawah */
+    width: 100%; /* Mengatur lebar footer 100% */
+    background-color: #332D2D; /* Warna latar belakang footer */
+    color: white; /* Warna teks footer */
+    text-align: center; /* Menyelaraskan teks ke tengah */
+    padding: 20px 0; /* Padding atas dan bawah */
+    z-index: 1000; /* Pastikan footer di atas elemen lain */
+}
+
+.navbar-nav .nav-item1 .nav-link {
+    color: white;
+    padding: 15px 20px;
+    display: block;
+    text-align: center;
+}
+
+.navbar-nav .nav-item1 .nav-link:hover {
+    background-color: #ff0000;
+    border-radius: 5px;
+}
 
         </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<nav class="navbar navbar-expand-lg sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -363,7 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     
     <footer class="text-center py-3">
-  <div class="container">
+  <div class="container1">
     <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
     <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
   </div>
