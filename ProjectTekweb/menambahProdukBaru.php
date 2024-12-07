@@ -1,5 +1,15 @@
 <?php
 include 'koneksi.php';
+// session_set_cookie_params(0);
+
+// session_start();  // Start the session
+
+// // Check if the session variable 'role' exists and if it's one of the allowed roles
+// if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
+//     // Redirect to login page if not logged in as penjaga gudangz or pemilik
+//     header("Location: loginPage.php");
+//     exit();
+// }
 
 // Fungsi untuk menambah produk baru
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
@@ -35,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 if ($conn->query($sqlDetail) === TRUE) {
                     // Menambahkan data ke detail_laporan
                     $tanggal = date('Y-m-d');  // Tanggal saat ini
-                    $status_in_out = "+";
+                    $status_in_out = "In";
                     $sqlLaporan = "INSERT INTO detail_laporan (id_detprod, quantity, tanggal_in_out, status_in_out) 
                                    VALUES ('$id_barang', '$jumlah', '$tanggal', '$status_in_out')";
                     if ($conn->query($sqlLaporan) === TRUE) {
@@ -56,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 }
 
+
 // Query untuk menampilkan daftar produk
-$sqlProduk = "SELECT 
-                p.id_barang,
+$sqlProduk = "SELECT
                 p.kode_barang,
                 p.harga,
                 dp.stok_gudang,
@@ -87,19 +97,37 @@ $resultUkuran = $conn->query($sqlUkuran);
     <title>Daftar Produk</title>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.9/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.9/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0 ;
+            padding: 0 ;
         }
         .container {
             background-color: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Memusatkan secara horizontal */
+            justify-content: center; /* Memusatkan secara vertikal */
+            text-align: center; /* Menyelaraskan teks ke tengah */
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            margin-top: 20px; /* Memberikan jarak antara tombol dan elemen sebelumnya */
         }
         table {
             width: 100%;
@@ -131,33 +159,188 @@ $resultUkuran = $conn->query($sqlUkuran);
             background-color: #0056b3;
         }
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
+        display: none; /* Sembunyikan modal secara default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Latar belakang semi-transparan */
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.3s ease; /* Transisi halus */
+        z-index: 1000; /* Pastikan modal di atas elemen lain */
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 400px; /* Maksimal lebar modal */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Bayangan untuk efek kedalaman */
+    }
+    .modal-content h3 {
+        margin-bottom: 15px; /* Jarak antara judul dan konten */
+    }
+    .modal-content input, .modal-content select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px; /* Jarak antara input */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+    }
+    .modal-buttons {
+        display: flex;
+        justify-content: space-between; /* Jarak antara tombol */
+    }
+    .modal-buttons .btn {
+        flex: 1; /* Tombol mengambil ruang yang sama */
+        margin: 0 5px; /* Jarak antar tombol */
+    }
+     /* Navbar */
+     .navbar {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #343a40;
+        }
+
+        .navbar .container-fluid {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .navbar-nav .nav-item {
+            list-style: none;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: white;
+            padding: 15px 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        /* Dropdown */
+        .dropdown-menu {
             left: 0;
+            right: auto;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+        }
+
+        .dropdown-submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: #333;
+            padding: 10px 20px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }  footer {
+            background-color: #332D2D; /* Warna latar belakang footer */
+            color: white; /* Warna teks footer */
+            margin-top: auto; /* Membuat footer menempel di bawah */
+            padding: 20px 0;
             width: 100%;
+        }
+        html, body {
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
+        .navbar-nav .nav-item1 .nav-link {
+            color: white;
+            padding: 15px 20px;
+            display: block;
+            text-align: center;
         }
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .navbar-nav .nav-item1 .nav-link:hover {
+                    background-color: #ff0000;
+                    border-radius: 5px;
         }
+
+
     </style>
 </head>
 <body>
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="menambahProdukBaru.php"><i class="fas fa-box"></i> Produk</a></li>
+                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga </a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-store-alt"></i> Stok</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="pageStokToko.php">Toko</a></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Gudang</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="lihatStokHargaBarangGudang.php">Lihat Stok</a></li>
+                                <li><a class="dropdown-item" href="tambahStokGudang.php">Tambah Stok</a></li>
+                                <li><a class="dropdown-item" href="pindah_stokGudang.php">Pindah Stok</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="halamanTransaksi.php"><i class="fas fa-exchange-alt"></i> Transaksi</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-users"></i> Karyawan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="absensi.php">Absensi</a></li>
+                        <li><a class="dropdown-item" href="perhitunganGaji.php">Perhitungan Gaji</a></li>
+                        <li><a class="dropdown-item" href="MelihatAbsensiPage.php">List Absensi</a></li>
+                        <li><a class="dropdown-item" href="pageKaryawan.php">Manajemen Karyawan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-file-alt"></i> Laporan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="pageLaporan.php">Transaksi</a></li>
+                        <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item1"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav> 
 <div class="container">
     <h1>Daftar Produk</h1>
     
@@ -167,27 +350,26 @@ $resultUkuran = $conn->query($sqlUkuran);
     <!-- Daftar Produk -->
     <?php if ($resultProduk->num_rows > 0): ?>
         <table id="productTable">
-            <thead>
-                <tr>
-                    <th id="sortIdBarang">ID Barang</th>
-                    <th id="sortKodeBarang">Kode Barang</th>
-                    <th id="sortHarga">Harga</th>
-                    <th id="sortStok">Stok Gudang</th>
-                    <th id="sortUkuran">Ukuran</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $resultProduk->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $row['id_barang'] ?></td>
-                        <td><?= $row['kode_barang'] ?></td>
-                        <td><?= number_format($row['harga'], 2) ?></td>
-                        <td><?= $row['stok_gudang'] ?></td>
-                        <td><?= $row['ukuran'] ?></td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+    <thead>
+        <tr>
+            <th id="sortKodeBarang">Kode Barang</th>
+            <th id="sortHarga">Harga</th>
+            <th id="sortStok">Stok Gudang</th>
+            <th id="sortUkuran">Ukuran</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php while ($row = $resultProduk->fetch_assoc()): ?>
+            <tr>
+                <td><?= $row['kode_barang'] ?></td>
+                <td><?= "Rp. " . number_format($row['harga'], 0, ',', '.') ?></td>
+                <td><?= $row['stok_gudang'] ?></td>
+                <td><?= $row['ukuran'] ?></td>
+            </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
+
     <?php else: ?>
         <p>Tidak ada produk yang tersedia.</p>
     <?php endif; ?>
@@ -201,7 +383,7 @@ $resultUkuran = $conn->query($sqlUkuran);
             <label for="kode_barang">Kode Barang:</label>
             <input type="text" id="kode_barang" name="kode_barang" required>
             
-            <label for="harga">Harga:</label>
+            <label for="harga">Harga (min 100):</label>
             <input type="number" id="harga" name="harga" required>
             
             <label for="jumlah">Stok Gudang:</label>
@@ -214,8 +396,10 @@ $resultUkuran = $conn->query($sqlUkuran);
                 <?php endwhile; ?>
             </select>
             
-            <button type="submit" name="submit" class="btn">Simpan Produk</button>
-            <button type="button" class="btn" id="closeModalBtn">Tutup</button>
+            <div class="modal-buttons">
+                <button type="submit" name="submit" class="btn">Simpan Produk</button>
+                <button type="button" class="btn" id="closeModalBtn">Tutup</button>
+            </div>
         </form>
     </div>
 </div>
@@ -311,7 +495,23 @@ $resultUkuran = $conn->query($sqlUkuran);
             text: '<?= isset($error_message) ? $error_message : "Terjadi kesalahan." ?>',
         });
     <?php endif; ?>
+    document.querySelector('form').onsubmit = function(e) {
+        let harga = document.getElementById('harga').value;
+        if (harga < 100) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus lebih dari 100!',
+            });
+        }
+    };
 </script>
-
+<footer class="text-center py-3">
+  <div class="container1">
+    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
+    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+  </div>
+</footer>
 </body>
 </html>
