@@ -398,7 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ?>
     </div>
     <footer class="text-center py-3">
-  <div class="container">
+  <div class="container1">
     <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
     <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
   </div>
