@@ -44,7 +44,8 @@ function cekStokGudang($id_detprod) {
 }
 
 // Fungsi untuk memindahkan stok dari gudang ke toko
-function pindahStok($id_detprod, $jumlah) {
+// Fungsi untuk memindahkan stok dari gudang ke toko
+function pindah_stokGudang($id_detprod, $jumlah) {
     global $conn;
 
     // Cek stok gudang sebelum dipindahkan
@@ -64,11 +65,24 @@ function pindahStok($id_detprod, $jumlah) {
         $stmt->execute();
         $stmt->close();
 
-        return true; // Stok berhasil dipindahkan
+        // Simpan transaksi ke laporanTransaksi
+        $status_in_out = 'out';  // Karena stok dipindahkan dari gudang (out)
+        $tanggal_in_out = date('Y-m-d H:i:s');  // Waktu saat transaksi dilakukan
+
+        // Query untuk menyimpan transaksi
+        $query_laporan = "INSERT INTO detail_laporan (id_detprod, quantity, status_in_out, tanggal_in_out) 
+                          VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($query_laporan);
+        $stmt->bind_param("iiss", $id_detprod, $jumlah, $status_in_out, $tanggal_in_out);
+        $stmt->execute();
+        $stmt->close();
+
+        return true; // Stok berhasil dipindahkan dan laporan dibuat
     } else {
         return false; // Stok gudang tidak cukup
     }
 }
+
 
 // Proses jika form dikirim
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -77,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $jumlah = $_POST['jumlah'];
 
         // Pindahkan stok
-        $berhasil = pindahStok($id_detprod, $jumlah);
+        $berhasil = pindah_stokGudang($id_detprod, $jumlah);
 
         // Menampilkan notifikasi
         if ($berhasil) {
@@ -143,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         input[type="submit"] {
             width: 100%;
             padding: 14px;
-            background-color: #4CAF50;
+            background-color: #808080;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -153,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #222222;
         }
 
         .notification {
@@ -195,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container">
         <!-- Form untuk memasukkan kode barang -->
-        <form method="POST" action="pindah_stok.php">
+        <form method="POST" action="pindah_stokGudang.php">
             <div class="form-group">
                 <label for="kode_barang">Kode Barang:</label>
                 <input type="text" id="kode_barang" name="kode_barang" value="<?php echo isset($_POST['kode_barang']) ? htmlspecialchars($_POST['kode_barang']) : ''; ?>" required>
@@ -215,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $produk_list = cariProduk($kode_barang);
 
             if (count($produk_list) > 0) {
-                echo '<form method="POST" action="pindah_stok.php">';
+                echo '<form method="POST" action="pindah_stokGudang.php">';
                 echo '<div class="form-group">';
                 echo '<label for="id_detprod">Pilih Produk:</label>';
                 echo '<select name="id_detprod" required>';

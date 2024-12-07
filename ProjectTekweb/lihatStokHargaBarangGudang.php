@@ -7,7 +7,7 @@ include('produk.php'); // Menggunakan class Produk
 $produk = new Produk($conn);
 
 // Fungsi untuk melihat stok dan harga barang
-function lihatStok($kode_barang = null) {
+function lihatStokHargaBarangGudang($kode_barang = null) {
     global $conn; // Menggunakan koneksi global
 
     // Jika kode_barang disediakan, tampilkan detail barang tertentu
@@ -51,13 +51,12 @@ function lihatStok($kode_barang = null) {
         /* Styling untuk tema biru */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f0f4f8;
+            background-color: #f7f7f7;
             margin: 0;
             padding: 0;
         }
 
         h1 {
-            color: #007bff;
             text-align: center;
             margin-top: 30px;
         }
@@ -79,11 +78,6 @@ function lihatStok($kode_barang = null) {
             display: block;
             font-weight: bold;
             margin-bottom: 8px;
-            color: #555;
-        }
-
-        input[type="text"], input[type="submit"] {
-            font-size: 16px;
         }
 
         input[type="text"] {
@@ -94,19 +88,16 @@ function lihatStok($kode_barang = null) {
             background-color: #f9f9f9;
         }
 
-        input[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .button-container {
+            display: flex;
+            justify-content: center; /* Memusatkan tombol secara horizontal */
+            gap: 10px; /* Jarak antara tombol */
+            margin-top: 20px; /* Jarak atas dari container */
         }
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;
+        .btn-custom {
+            padding: 10px 20px; /* Mengatur padding tombol */
+            font-size: 16px; /* Mengatur ukuran font */
         }
 
         table {
@@ -125,7 +116,7 @@ function lihatStok($kode_barang = null) {
         }
 
         th {
-            background-color: #007bff;
+            background-color:#007bff;
             color: white;
         }
 
@@ -163,13 +154,16 @@ function lihatStok($kode_barang = null) {
         <h1>Melihat Stok dan Harga Barang</h1>
 
         <!-- Form untuk memasukkan kode barang -->
-        <form method="GET" action="lihatStok.php">
+        <form method="GET" action="lihatStokHargaBarangGudang.php">
             <div class="form-group">
                 <label for="kode_barang">Masukkan Kode Barang (Optional):</label>
                 <input type="text" id="kode_barang" name="kode_barang" class="form-control" placeholder="Masukkan kode barang...">
             </div>
-
-            <button type="submit" class="btn btn-primary">Lihat Stok</button>
+            
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary btn-custom">Lihat Stok</button>
+                <button type="button" class="btn btn-secondary btn-custom" onclick="window.location.href='pindah_stokGudang.php'">Pindah Stok</button>
+            </div>
         </form>
 
         <?php
@@ -179,7 +173,7 @@ function lihatStok($kode_barang = null) {
         // Menampilkan stok barang hanya jika form disubmit
         if ($kode_barang !== null) {
             // Menampilkan stok barang
-            $result = lihatStok($kode_barang);
+            $result = lihatStokHargaBarangGudang($kode_barang);
 
             if ($result && $result->num_rows > 0) {
                 // Menampilkan data produk dalam tabel
