@@ -1,15 +1,15 @@
 <?php
 include 'koneksi.php';
-// session_set_cookie_params(0);
+session_set_cookie_params(0);
 
-// session_start();  // Start the session
+session_start();  // Start the session
 
-// // Check if the session variable 'role' exists and if it's one of the allowed roles
-// if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
-//     // Redirect to login page if not logged in as penjaga gudangz or pemilik
-//     header("Location: loginPage.php");
-//     exit();
-// }
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESSION['jabatan'] !== 'penjaga gudang') {
+    // Redirect to login page if not logged in as penjaga gudangz or pemilik
+    header("Location: loginPage.php");
+    exit();
+}
 
 // Fungsi untuk menambah produk baru
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
