@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <style>
-        body {
+     body {
             background-color: #f8f9fa;
             display: flex;
             justify-content: center;
@@ -19,45 +19,48 @@
 
         .login-container {
             background-color: #fff;
-            padding: 30px;
+            padding: 40px; /* Menambahkan padding lebih banyak */
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px; /* Memperbesar lebar container */
         }
 
         .login-container h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px; /* Memberikan jarak lebih banyak antara judul dan form */
             text-align: center;
             font-weight: bold;
             color: #333;
+            font-size: 24px; /* Memperbesar ukuran font judul */
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* Menambahkan jarak lebih banyak antar elemen form */
         }
 
         .form-group label {
             font-weight: bold;
             color: #555;
+            font-size: 16px; /* Memperbesar ukuran font label */
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px;
+            padding: 12px; /* Menambah padding input */
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
+            font-size: 16px; /* Memperbesar font pada input */
         }
 
         button[type="submit"] {
             width: 100%;
             background-color: #007bff;
             color: #fff;
-            padding: 10px;
+            padding: 12px; /* Menambah padding tombol */
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px; /* Memperbesar ukuran font tombol */
             cursor: pointer;
         }
 
@@ -82,6 +85,7 @@
             font-size: 12px;
             color: #aaa;
         }
+
     </style>
 </head>
 <body>
@@ -99,7 +103,7 @@
             <button type="submit">Login</button>
             <div id="notification" class="notification"></div>
         </form>
-        <div class="footer">&copy; 2024 Yanto Collection</div>
+        <div class="footer">&copy; 2024 Muse Collection</div>
     </div>
 
     <script>

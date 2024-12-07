@@ -117,6 +117,50 @@ class DetailProduk {
         }
     }
 
+    // Menambah stok toko
+    public function menambahStokToko($id_detprod, $jumlah) {
+        $stmt = $this->conn->prepare("SELECT stok_toko FROM detail_produk WHERE id_detprod = ?");
+        $stmt->bind_param("i", $id_detprod);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if ($result) {
+            $current_stock = $result['stok_toko'];
+            $new_stock = $current_stock + $jumlah;
+
+            $stmt = $this->conn->prepare("UPDATE detail_produk SET stok_toko = ? WHERE id_detprod = ?");
+            $stmt->bind_param("ii", $new_stock, $id_detprod);
+            $stmt->execute();
+            $stmt->close();
+
+            return true;
+        }
+        return false;
+    }
+
+    // Menambah stok gudang
+    public function menambahStokGudang($id_detprod, $jumlah) {
+        $stmt = $this->conn->prepare("SELECT stok_gudang FROM detail_produk WHERE id_detprod = ?");
+        $stmt->bind_param("i", $id_detprod);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if ($result) {
+            $current_stock = $result['stok_gudang'];
+            $new_stock = $current_stock + $jumlah;
+
+            $stmt = $this->conn->prepare("UPDATE detail_produk SET stok_gudang = ? WHERE id_detprod = ?");
+            $stmt->bind_param("ii", $new_stock, $id_detprod);
+            $stmt->execute();
+            $stmt->close();
+
+            return true;
+        }
+        return false;
+    }
+
 }
 
 ?>
