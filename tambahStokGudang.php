@@ -1,4 +1,15 @@
 <?php
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'penjaga gudang' && $_SESSION['jabatan'] !== 'pemilik')) {
+    // Redirect to login page if not logged in as kasir or pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+
 // Menghubungkan koneksi database yang sudah ada
 include('koneksi.php');
 
