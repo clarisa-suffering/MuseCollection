@@ -1,7 +1,18 @@
 <?php
 include 'koneksi.php';
 
-// Fungsi untuk mendapatkan bulan dan tahun unik dari detail_laporan
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'penjaga gudang' && $_SESSION['jabatan'] !== 'pemilik')) {
+    // Redirect to login page if not logged in as kasir or pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+
+Fungsi untuk mendapatkan bulan dan tahun unik dari detail_laporan
 function getUniqueMonthsAndYears($conn) {
     $sql = "SELECT DISTINCT 
                 YEAR(tanggal_in_out) AS tahun, 
@@ -66,7 +77,7 @@ if ($searchQuery !== '') {
         $searchCondition = " AND d.quantity = " . intval($searchQuery);
     } else {
         // Search berdasarkan kode barang
-        $searchCondition = " AND p.kode_barang LIKE '%" . $conn->real_escape_string($searchQuery) . "%'";
+        $searchCondition = " AND p.kode_barang OR u.ukuran LIKE '%" . $conn->real_escape_string($searchQuery) . "%'";
     }
 }
 
@@ -283,7 +294,7 @@ $resultLaporan = $conn->query($sqlLaporan);
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
+        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> HARTONO COLLECTION </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -363,13 +374,13 @@ $resultLaporan = $conn->query($sqlLaporan);
 
         <?php if ($resultLaporan->num_rows > 0): ?>
             <h3>Laporan Stok <?= $namaBulan[$bulanLaporan] . ' ' . $tahunLaporan ?></h3>
-            <table>
+            <table id="productTable">
                 <thead>
                     <tr>
                         <th>Kode Barang</th>
-                        <th>Ukuran</th>
+                        <th id="sortUkuran">Ukuran</th>
                         <th>Tanggal</th>
-                        <th>Jumlah</th>
+                        <th id="sortStok">Jumlah</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -389,10 +400,75 @@ $resultLaporan = $conn->query($sqlLaporan);
             <p>Tidak ada barang masuk/keluar untuk bulan <?= $namaBulan[$bulanLaporan] ?> <?= $tahunLaporan ?>.</p>
         <?php endif; ?>
     </div>
+    <script>
+        let sortAsc = {
+        kode_barang: true,
+        harga: true,
+        stok: true,
+        ukuran: true
+    };
+
+    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
+    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
+
+    // Mengambil elemen header yang bisa disortir
+    const headers = document.querySelectorAll('table th');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+            const columnName = header.id.replace('sort', '').toLowerCase();
+            sortTable(columnIndex, columnName);
+        });
+    });
+
+    // Fungsi untuk sorting tabel
+    function sortTable(columnIndex, columnName) {
+        const table = document.getElementById('productTable');
+        const rows = Array.from(table.rows).slice(1); // Mengambil semua baris kecuali header
+
+        // Menentukan apakah urutan akan menaik atau menurun
+        const isAscending = sortAsc[columnName];
+
+        // Sorting berdasarkan kolom yang diklik
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+
+            // Parsing harga, ukuran, dan ID Barang untuk sorting yang benar
+            let valueA, valueB;
+            if (columnName === 'harga') {
+                valueA = parseFloat(cellA.replace(/[^0-9.-]+/g, "")); // Hapus simbol mata uang dan parse float
+                valueB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+            } else if (columnName === 'ukuran') {
+                valueA = ukuranOrder.indexOf(cellA); // Menyusun berdasarkan urutan ukuran
+                valueB = ukuranOrder.indexOf(cellB);
+            } else if (columnName === 'id_barang') {
+                valueA = parseInt(cellA); // ID Barang disortir secara numerik
+                valueB = parseInt(cellB);
+            } else {
+                valueA = cellA;
+                valueB = cellB;
+            }
+
+            if (isAscending) {
+                return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+                return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+        });
+
+        // Menyusun ulang baris tabel
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle arah sorting
+        sortAsc[columnName] = !isAscending;
+    }
+    </script>
     <footer class="text-center py-3">
   <div class="container1">
-    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
-    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+    <p class="mb-0">&copy; <?php echo date("Y"); ?> HARTONO COLLECTION. All rights reserved.</p>
+    <p class="mb-0">Email: info@hartonocollection.com | Phone: (123) 456-7890</p>
   </div>
 </footer>
 </body>
