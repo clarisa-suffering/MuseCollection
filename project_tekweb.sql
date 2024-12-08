@@ -366,3 +366,55 @@ INSERT INTO `detail_produk` (`id_detprod`, `id_barang`, `id_ukuran`, `stok_toko`
 (11, 4, 2, 1300, 3500, 1),
 (12, 4, 3, 2000, 2000, 1);
 
+INSERT INTO `pelanggan` (`id_pelanggan`, `nama`, `nomor_telepon`, `alamat`) VALUES
+(1, 'Kiana', '', ''),
+(2, 'Ari', '081233547688', 'Jl. A.Yani no.19 Surabaya'),
+(3, 'Brone', '08224356789', 'Jl. Pahlawan No.3 Surabaya'),
+(4, 'Handi', '', ''),
+(5, 'Jason', '', ''),
+(6, 'Pina', '082245888755', 'Jl. Manyar no.10 Surabaya'),
+(7, 'Kira', '', ''),
+(8, 'Arya', '081287747698', 'Jl. A.Yani no.17 Surabaya'),
+(9, 'Charles', '08224356555', 'Jl. Pahlawan No.39 Surabaya'),
+(10, 'Hoya', '', ''),
+(11, 'Jia', '', ''),
+(12, 'Laura', '082245456212', 'Jl. Kertajaya no.11 Surabaya');
+
+
+INSERT INTO `transaksi` (`id_transaksi`, `id_pelanggan`, `kategori_penjualan`, `harga_total`, `status_transaksi`, `tanggal_transaksi`) VALUES
+(1, 1, 'retail', 2200000, 'selesai', '2024-11-02 12:03:24'),
+(2, 2, 'PO', 1950000, 'selesai', '2024-11-02 17:00:00'),
+(3, 3, 'PO', 3600000, 'selesai', '2024-11-03 12:07:32'),
+(4, 4, 'retail', 3000000, 'selesai', '2024-11-05 12:11:18'),
+(5, 5, 'retail', 7500000, 'selesai', '2024-11-06 12:11:59'),
+(6, 6, 'PO', 5000000, 'selesai', '2024-11-08 12:13:44'),
+(7, 7, 'retail', 2200000, 'selesai', '2024-12-02 12:03:24'),
+(8, 8, 'PO', 1950000, 'selesai', '2024-12-02 17:00:00'),
+(9, 9, 'PO', 3600000, 'selesai', '2024-12-03 12:07:32'),
+(10, 10, 'retail', 3000000, 'selesai', '2024-12-05 12:11:18'),
+(11, 11, 'retail', 7500000, 'selesai', '2024-12-06 12:11:59'),
+(12, 12, 'PO', 5000000, 'selesai', '2024-12-08 12:13:44');
+
+
+INSERT INTO `detail_transaksi` (`id_detail`, `id_detprod`, `jumlah`, `subtotal`, `id_transaksi`) VALUES
+(1, 1, 5, 1000000, 1),
+(2, 6, 4, 1200000, 1),
+(3, 6, 5, 1500000, 2),
+(4, 10, 3, 450000, 2),
+(5, 5, 12, 3600000, 3),
+(6, 10, 20, 3000000, 4),
+(7, 7, 30, 7500000, 5),
+(8, 6, 5, 1500000, 6),
+(9, 1, 10, 2000000, 6),
+(10, 10, 10, 1500000, 6),
+(11, 1, 5, 1000000, 7),
+(12, 6, 4, 1200000, 7),
+(13, 6, 5, 1500000, 8),
+(14, 10, 3, 450000, 8),
+(15, 5, 12, 3600000, 9),
+(16, 10, 20, 3000000, 10),
+(17, 7, 30, 7500000, 11),
+(18, 6, 5, 1500000, 12),
+(19, 1, 10, 2000000, 12),
+(20, 10, 10, 1500000, 12);
+
