@@ -294,7 +294,7 @@ $resultLaporan = $conn->query($sqlLaporan);
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> HARTONO COLLECTION </a>
+        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -467,8 +467,8 @@ $resultLaporan = $conn->query($sqlLaporan);
     </script>
     <footer class="text-center py-3">
   <div class="container1">
-    <p class="mb-0">&copy; <?php echo date("Y"); ?> HARTONO COLLECTION. All rights reserved.</p>
-    <p class="mb-0">Email: info@hartonocollection.com | Phone: (123) 456-7890</p>
+    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
+    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
   </div>
 </footer>
 </body>
