@@ -12,7 +12,7 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'penjaga gudang' &
     exit();
 }
 
-Fungsi untuk mendapatkan bulan dan tahun unik dari detail_laporan
+//Fungsi untuk mendapatkan bulan dan tahun unik dari detail_laporan
 function getUniqueMonthsAndYears($conn) {
     $sql = "SELECT DISTINCT 
                 YEAR(tanggal_in_out) AS tahun, 
