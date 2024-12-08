@@ -460,7 +460,7 @@ $resultProduk = $conn->query($sqlProduk);
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="dashboard.php">
-          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
+          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> HARTONO COLLECTION
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">
@@ -506,7 +506,7 @@ $resultProduk = $conn->query($sqlProduk);
                         <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-exchange-alt"></i> Logout</a></li>
                 </li>
             </ul>
         </div>
@@ -535,13 +535,13 @@ $resultProduk = $conn->query($sqlProduk);
 
     <button class="btn btn-primary btn-sm" id="addProductBtn">Tambah Produk</button>
     </div>
-    <table>
+    <table id="productTable">
         <thead>
             <tr>
-                <th>Kode Barang</th>
-                <th>Ukuran</th>
-                <th>Harga</th>
-                <th>Stok Gudang</th>
+                <th id="sortKodeBarang">Kode Barang</th>
+                <th id="sortUkuran">Ukuran</th>
+                <th id="sortHarga">Harga</th>
+                <th id="sortStok">Stok Gudang</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -631,7 +631,6 @@ $resultProduk = $conn->query($sqlProduk);
 
     // Mengatur flag untuk arah sorting
     let sortAsc = {
-        id_barang: true,
         kode_barang: true,
         harga: true,
         stok: true,
@@ -773,8 +772,8 @@ document.getElementById('form-search').onsubmit = function(e) {
 
 <footer class="footer">
     <div class="container1 text-center">
-        <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
-        <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+        <p class="mb-0">&copy; <?php echo date("Y"); ?> HARTONO COLLECTION. All rights reserved.</p>
+        <p class="mb-0">Email: info@hartonocollection.com | Phone: (123) 456-7890</p>
     </div>
 </footer>
 
