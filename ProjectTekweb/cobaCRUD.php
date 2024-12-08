@@ -1,17 +1,6 @@
 <?php
 include 'koneksi.php';
 
-// session_set_cookie_params(0);
-
-// session_start();  // Start the session
-
-// // Check if the session variable 'role' exists and if it's one of the allowed roles
-// if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
-//     // Redirect to login page if not logged in as pemilik
-//     header("Location: loginPage.php");
-//     exit();
-// }
-
 $error = false;
 $error_message = '';
 $success = false;
@@ -20,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     // Ambil data dari form
     $kode_barang = $_POST['kode_barang'];
     $harga = $_POST['harga'];
-    $jumlah = $_POST['jumlah'];
+    $jumlah = $_POST['stok_gudang'];
     $id_ukuran = $_POST['id_ukuran'];  // Ambil id_ukuran dari form
 
     // Cek jika harga dan jumlah tidak valid (0 atau negatif)

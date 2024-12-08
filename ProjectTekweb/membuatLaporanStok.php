@@ -87,13 +87,16 @@ $sqlLaporan = "SELECT
                     dp.id_barang,
                     d.quantity,
                     d.status_in_out,
-                    p.kode_barang
+                    p.kode_barang,
+                    u.ukuran
                FROM 
                     detail_laporan d
                JOIN 
                     detail_produk dp ON d.id_detprod = dp.id_detprod
                JOIN 
                     produk p ON dp.id_barang = p.id_barang
+               JOIN 
+                    ukuran u ON dp.id_ukuran = u.id_ukuran
                $periodCondition
                $searchCondition
                ORDER BY d.tanggal_in_out ASC";
@@ -364,6 +367,7 @@ $resultLaporan = $conn->query($sqlLaporan);
                 <thead>
                     <tr>
                         <th>Kode Barang</th>
+                        <th>Ukuran</th>
                         <th>Tanggal</th>
                         <th>Jumlah</th>
                         <th>Status</th>
@@ -373,6 +377,7 @@ $resultLaporan = $conn->query($sqlLaporan);
                     <?php while ($row = $resultLaporan->fetch_assoc()): ?>
                         <tr>
                             <td><?= $row['kode_barang'] ?></td>
+                            <td><?= $row['ukuran'] ?></td>
                             <td><?= date('d-m-Y', strtotime($row['tanggal_in_out'])) ?></td>
                             <td><?= abs($row['quantity']) ?></td>
                             <td><?= $row['status_in_out'] ?></td>
