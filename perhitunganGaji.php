@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $id_karyawan = (int)$_POST['id_karyawan'];
         $detail = $service->hitungGaji($id_karyawan);
         if ($detail) {
-            // Buat tampilan detail dalam card yang lebih menarik
             $details = "
             <div class='container mt-5'>
                 <div class='card shadow-sm'>
@@ -63,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $id_karyawan = (int)$_POST['id_karyawan'];
         $detail = $service->detailGaji($id_karyawan);
         if ($detail) {
-            // Tabel detail dengan tampilan yang sama
             $details = "
             <div class='container mt-5'>
                 <div class='card shadow-sm'>
@@ -165,98 +163,109 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         .dropdown-item:hover {
             background-color: #f8f9fa;
         }
+
         .navbar-nav .nav-item .nav-link[href="loginPage.php"]:hover {
-        background-color: red;
-        border-radius: 5px; /* Opsional, untuk konsistensi dengan hover lainnya */
+            background-color: red;
+            border-radius: 5px;
         }
 
-      @media (min-width: 992px) {
-          .dropdown-submenu:hover .dropdown-menu {
-              display: block;
-          }
-      }
+        @media (min-width: 992px) {
+            .dropdown-submenu:hover .dropdown-menu {
+                display: block;
+            }
+        }
 
-      .dropdown-submenu.show .dropdown-menu {
-          display: block;
-      }
+        .dropdown-submenu.show .dropdown-menu {
+            display: block;
+        }
 
-      @media (max-width: 991px) {
-          .dropdown-menu .show {
-              display: block !important;
-          }
+        @media (max-width: 991px) {
+            .dropdown-menu .show {
+                display: block !important;
+            }
 
-          .dropdown-submenu .dropdown-menu {
-              position: relative;
-              left: 0;
-              top: 0;
-              margin-left: 1rem;
-          }
-      }
+            .dropdown-submenu .dropdown-menu {
+                position: relative;
+                left: 0;
+                top: 0;
+                margin-left: 1rem;
+            }
+        }
 
-       .navbar-toggler-icon {
-        background-image: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 24px;
-        position: relative;
-    }
-    .navbar-toggler-icon::before,
-    .navbar-toggler-icon::after,
-    .navbar-toggler-icon div {
-        content: '';
-        background-color: white; /* Warna garis putih */
-        width: 100%;
-        height: 3px;
-        position: absolute;
-        left: 0;
-    }
-    .navbar-toggler-icon::before {
-        top: 0;
-    }
-    .navbar-toggler-icon div {
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    .navbar-toggler-icon::after {
-        bottom: 0;
-    }
-    footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
-            padding: 20px 0;
+        .navbar-toggler-icon {
+            background-image: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 24px;
+            position: relative;
+        }
+        .navbar-toggler-icon::before,
+        .navbar-toggler-icon::after,
+        .navbar-toggler-icon div {
+            content: '';
+            background-color: white; 
             width: 100%;
+            height: 3px;
+            position: absolute;
+            left: 0;
         }
+        .navbar-toggler-icon::before {
+            top: 0;
+        }
+        .navbar-toggler-icon div {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .navbar-toggler-icon::after {
+            bottom: 0;
+        }
+
         html, body {
             height: 100%;
             margin: 0;
             display: flex;
             flex-direction: column;
         }
-        </style>
-          <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
-              dropdownToggle.addEventListener('click', function (e) {
-                  var submenu = this.nextElementSibling;
-                  if (submenu) {
-                      submenu.classList.toggle('show');
-                  }
-                  e.preventDefault();
-                  e.stopPropagation(); // Mencegah penutupan dropdown utama
-              });
-          });
 
-          // Menutup dropdown saat klik di luar
-          document.addEventListener('click', function (e) {
-              document.querySelectorAll('.dropdown-menu .show').forEach(function (openSubmenu) {
-                  openSubmenu.classList.remove('show');
-              });
-          });
-      });
-  </script>
+        .container {
+            flex: 1; 
+            margin-bottom: 20px; 
+        }
+
+        .footer {
+            background-color: #332D2D; 
+            color: white; 
+            text-align: center;
+            padding: 20px 0;
+            position: fixed; 
+            bottom: 0;
+            width: 100%; 
+        }
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function (e) {
+                    var submenu = this.nextElementSibling;
+                    if (submenu) {
+                        submenu.classList.toggle('show');
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            // Menutup dropdown saat klik di luar
+            document.addEventListener('click', function (e) {
+                document.querySelectorAll('.dropdown-menu .show').forEach(function (openSubmenu) {
+                    openSubmenu.classList.remove('show');
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top">
@@ -264,7 +273,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <a class="navbar-brand" href="dashboard.php">
           <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">
             <div></div>
           </span>
@@ -293,8 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </li>
                 <li class="nav-item"><a class="nav-link" href="halamanTransaksi.php"><i class="fas fa-exchange-alt"></i> Transaksi</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-users"></i> Karyawan</a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownKaryawan" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-users"></i> Karyawan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownKaryawan">
                         <li><a class="dropdown-item" href="absensi.php">Absensi</a></li>
                         <li><a class="dropdown-item" href="perhitunganGaji.php">Perhitungan Gaji</a></li>
                         <li><a class="dropdown-item" href="MelihatAbsensiPage.php">List Absensi</a></li>
@@ -302,93 +312,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-file-alt"></i> Laporan</a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownLaporan" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-file-alt"></i> Laporan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownLaporan">
                         <li><a class="dropdown-item" href="pageLaporan.php">Transaksi</a></li>
                         <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-exchange-alt"></i> Logout</a></li>
-                </li>
             </ul>
         </div>
     </div>
-  </nav>
-  <div class="container mt-5">
-        <div class="text-center">
+</nav>
+
+<div class="container mt-5">
+    <div class="text-center">
         <h2>Daftar Karyawan</h2>
         <form method="POST" action="">
             <input type="hidden" name="action" value="all">
             <button type="submit" class="btn btn-success mb-3">Hitung Gaji Semua Karyawan</button>
         </form>
-        </div>
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nama</th>
-                    <th>Pekerjaan</th>
-                    <th>Gaji</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-    <?php
-    // Menampilkan karyawan non-pemilik
-    $result = $conn->query("SELECT k.id_karyawan, k.nama, k.gaji, k.periode_terakhir, k.kode_karyawan
-                            FROM karyawan k 
-                            WHERE k.kode_karyawan NOT RLIKE '^[pP][0-9]+'");
-    while ($row = $result->fetch_assoc()) {
-        $periode_terakhir = $row['periode_terakhir'] ? new DateTime($row['periode_terakhir']) : null;
-        $current_date = new DateTime();
-
-        $status = ($periode_terakhir === null || $periode_terakhir->diff($current_date)->y >= 1) 
-            ? '<span class="text-danger">Perlu Diperbarui</span>' 
-            : '<span class="text-success">Terkini</span>';
-
-        // Menentukan pekerjaan berdasarkan kode_karyawan
-        $kode = $row['kode_karyawan'];
-        if (preg_match('/^PG/i', $kode)) {
-            $pekerjaan = "Penjaga Gudang";
-        } elseif (preg_match('/^K/i', $kode)) {
-            $pekerjaan = "Karyawan";
-        } else {
-            $pekerjaan = "Lainnya";
-        }
-
-        echo "<tr>
-            <td>{$row['nama']}</td>
-            <td>{$pekerjaan}</td>
-            <td>Rp " . number_format($row['gaji'], 0, ',', '.') . "</td>
-            <td>{$status}</td>
-            <td>
-                <form method='POST' action='' style='display:inline;'>
-                    <input type='hidden' name='id_karyawan' value='{$row['id_karyawan']}'>
-                    <button type='submit' name='action' value='hitung' class='btn btn-primary btn-sm'>Hitung Gaji</button>
-                </form>
-                <form method='POST' action='' style='display:inline;'>
-                    <input type='hidden' name='id_karyawan' value='{$row['id_karyawan']}'>
-                    <button type='submit' name='action' value='detail' class='btn btn-secondary btn-sm'>Detail Gaji</button>
-                </form>
-            </td>
-        </tr>";
-    }
-    ?>
-            </tbody>
-        </table>
     </div>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nama</th>
+                <th>Pekerjaan</th>
+                <th>Gaji</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        $result = $conn->query("SELECT k.id_karyawan, k.nama, k.gaji, k.periode_terakhir, k.kode_karyawan
+                                FROM karyawan k 
+                                WHERE k.kode_karyawan NOT RLIKE '^[pP][0-9]+'");
 
-    <!-- Rincian Perhitungan -->
-    <?php echo $details; ?>
+        while ($row = $result->fetch_assoc()) {
+            $periode_terakhir = $row['periode_terakhir'] ? new DateTime($row['periode_terakhir']) : null;
+            $current_date = new DateTime();
 
-    <!-- Tampilkan Notifikasi -->
-    <?php echo $alert; ?>
+            $status = ($periode_terakhir === null || $periode_terakhir->diff($current_date)->y >= 1) 
+                ? '<span class="text-danger">Perlu Diperbarui</span>' 
+                : '<span class="text-success">Terkini</span>';
 
-    <footer class="text-center py-3">
-  <div class="container1">
-    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
-    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
-  </div>
+            // Menentukan pekerjaan berdasarkan kode_karyawan
+            $kode = $row['kode_karyawan'];
+            if (preg_match('/^PG/i', $kode)) {
+                $pekerjaan = "Penjaga Gudang";
+            } elseif (preg_match('/^K/i', $kode)) {
+                $pekerjaan = "Karyawan";
+            } else {
+                $pekerjaan = "Lainnya";
+            }
+
+            echo "<tr>
+                <td>{$row['nama']}</td>
+                <td>{$pekerjaan}</td>
+                <td>Rp " . number_format($row['gaji'], 0, ',', '.') . "</td>
+                <td>{$status}</td>
+                <td>
+                    <form method='POST' action='' style='display:inline;'>
+                        <input type='hidden' name='id_karyawan' value='{$row['id_karyawan']}'>
+                        <button type='submit' name='action' value='hitung' class='btn btn-primary btn-sm'>Hitung Gaji</button>
+                    </form>
+                    <form method='POST' action='' style='display:inline;'>
+                        <input type='hidden' name='id_karyawan' value='{$row['id_karyawan']}'>
+                        <button type='submit' name='action' value='detail' class='btn btn-secondary btn-sm'>Detail Gaji</button>
+                    </form>
+                </td>
+            </tr>";
+        }
+        ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Rincian Perhitungan -->
+<?php echo $details; ?>
+
+<!-- Tampilkan Notifikasi -->
+<?php echo $alert; ?>
+
+<footer class="footer">
+    <div class="container1">
+        <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
+        <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+    </div>
 </footer>
+
 </body>
 </html>

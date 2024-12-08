@@ -1,9 +1,80 @@
 <?php
 include 'koneksi.php';
 
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
+    // Redirect to login page if not logged in as pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+
 $error = false;
 $error_message = '';
 $success = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    // Ambil data dari form
+    $kode_barang = $_POST['kode_barang'];
+    $harga = $_POST['harga'];
+    $jumlah = $_POST['jumlah'];
+    $id_ukuran = $_POST['id_ukuran'];  // Ambil id_ukuran dari form
+
+    // Cek jika harga dan jumlah tidak valid (0 atau negatif)
+    if ($harga < 1000) {
+        $error = true;
+        $error_message = "Harga harus lebih dari 1000.";
+    } elseif ($harga % 100 !== 0) {
+        $error = true;
+        $error_message = "Harga harus dalam kelipatan 100 (contoh: 1200, 1500).";
+    } elseif ($jumlah <= 0) {
+        $error = true;
+        $error_message = "Jumlah harus lebih besar dari 0.";
+    } else {
+        // Cek apakah kode barang sudah ada di database
+        $sqlCheckKode = "SELECT * FROM produk WHERE kode_barang = '$kode_barang'";
+        $resultCheckKode = $conn->query($sqlCheckKode);
+
+        if ($resultCheckKode->num_rows > 0) {
+            // Jika kode barang sudah ada
+            $error = true;
+            $error_message = "Kode barang sudah terdaftar. Silakan masukkan kode barang yang lain.";
+        } else {
+            // Query untuk menambah produk baru
+            $sql = "INSERT INTO produk (kode_barang, harga) VALUES ('$kode_barang', '$harga')";
+            
+            if ($conn->query($sql) === TRUE) {
+                // Ambil id_barang dari produk yang baru ditambahkan
+                $id_barang = $conn->insert_id;
+                
+                // Menambahkan stok ke detail_produk dengan id_ukuran
+                $sqlDetail = "INSERT INTO detail_produk (id_barang, stok_gudang, id_ukuran) VALUES ('$id_barang', '$jumlah', '$id_ukuran')";
+                if ($conn->query($sqlDetail) === TRUE) {
+                    // Menambahkan data ke detail_laporan
+                    $tanggal = date('Y-m-d');  // Tanggal saat ini
+                    $status_in_out = "In";
+                    $sqlLaporan = "INSERT INTO detail_laporan (id_detprod, quantity, tanggal_in_out, status_in_out) 
+                                   VALUES ('$id_barang', '$jumlah', '$tanggal', '$status_in_out')";
+                    if ($conn->query($sqlLaporan) === TRUE) {
+                        $success = true; // Tanda bahwa produk berhasil ditambahkan
+                    } else {
+                        $error = true;
+                        $error_message = "Gagal menambahkan data ke laporan.";
+                    }
+                } else {
+                    $error = true;
+                    $error_message = "Gagal menambahkan detail produk.";
+                }
+            } else {
+                $error = true;
+                $error_message = "Gagal menambahkan produk.";
+            }
+        }
+    }
+}
 
 // Proses Hapus Produk
 if (isset($_GET['action']) && $_GET['action'] === 'delete') {
@@ -30,9 +101,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stok_gudang = (int)$_POST['stok_gudang'];
     $id_ukuran = (int)$_POST['id_ukuran'];
 
-    if ($harga <= 0 || $stok_gudang < 0) {
+    if ($harga < 1000) {
         $error = true;
-        $error_message = "Harga harus > 0 dan stok ≥ 0.";
+        $error_message = "Harga harus lebih dari 1000.";
+    } elseif ($harga % 100 !== 0) {
+        $error = true;
+        $error_message = "Harga harus dalam kelipatan 100 (contoh: 1200, 1500).";
+    } elseif ($stok_gudang <= 0) {
+        $error = true;
+        $error_message = "Jumlah harus lebih besar dari 0.";
     } else {
         // Update produk
         $sqlUpdateProduk = "UPDATE produk SET harga = '$harga' WHERE id_barang = $id_barang";
@@ -40,7 +117,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Update detail_produk
             $sqlUpdateDetail = "UPDATE detail_produk SET stok_gudang = '$stok_gudang', id_ukuran = '$id_ukuran' WHERE id_barang = $id_barang";
             if ($conn->query($sqlUpdateDetail) === TRUE) {
-                $success = true;
+                // Update detail_laporan
+                $tanggal = date('Y-m-d'); // Tanggal saat ini
+                $status_in_out = "In"; // Status untuk pembaruan
+                $sqlUpdateLaporan = "UPDATE detail_laporan 
+                                     SET quantity = '$stok_gudang', tanggal_in_out = '$tanggal', status_in_out = '$status_in_out' 
+                                     WHERE id_detprod = $id_barang";
+                if ($conn->query($sqlUpdateLaporan) === TRUE) {
+                    $success = true;
+                } else {
+                    $error = true;
+                    $error_message = "Gagal mengupdate detail laporan.";
+                }
             } else {
                 $error = true;
                 $error_message = "Gagal mengupdate detail produk.";
@@ -89,7 +177,6 @@ $sqlProduk = "SELECT
 $resultProduk = $conn->query($sqlProduk);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -103,37 +190,6 @@ $resultProduk = $conn->query($sqlProduk);
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        table th {
-            background-color: #f2f2f2;
-            cursor: pointer;
-        }
-        table th:hover {
-            background-color: #e0e0e0;
-        }
-        .btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -147,7 +203,6 @@ $resultProduk = $conn->query($sqlProduk);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             max-width: 1200px;
             margin: 20px auto;
-            text-align: center;
         }
 
         h1 {
@@ -168,6 +223,9 @@ $resultProduk = $conn->query($sqlProduk);
         }
         table th {
             background-color: #f2f2f2;
+        }
+        tr, td{
+            text-align: center;
         }
         .btn-edit, .btn-delete {
             margin-right: 5px;
@@ -215,7 +273,7 @@ $resultProduk = $conn->query($sqlProduk);
 
         .search-container {
             margin-top: 20px;
-            text-align: center;
+            text-align: right;
         }
 
         .search-container input[type="text"] {
@@ -231,35 +289,6 @@ $resultProduk = $conn->query($sqlProduk);
             background-color: #007bff;
             color: white;
             border-radius: 4px;
-            text-align: center;
-        }
-        .btn-edit {
-            background-color: #ffc107; /* Warna kuning */
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-edit:hover {
-            background-color: #e0a800; /* Warna kuning tua */
-        }
-
-        /* Style untuk tombol Delete */
-        .btn-delete {
-            background-color: #dc3545; /* Warna merah */
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-delete:hover {
-            background-color: #c82333; /* Warna merah tua */
         }
         .navbar {
             width: 100%;
@@ -385,8 +414,27 @@ $resultProduk = $conn->query($sqlProduk);
     .navbar-toggler-icon::after {
         bottom: 0;
     }
+        .container {
+            flex: 1; 
+            margin-bottom: 20px; 
+        }
+
+        footer {
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
+            padding: 20px 0;
+            width: 100%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
     </style>
-      <script>
+       <script>
       document.addEventListener('DOMContentLoaded', function () {
           document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
               dropdownToggle.addEventListener('click', function (e) {
@@ -465,7 +513,7 @@ $resultProduk = $conn->query($sqlProduk);
     </div>
   </nav>
 <div class="container">
-    <h1>Daftar Produk</h1>
+    <h1 class="text-center">Daftar Produk</h1>
 
     <!-- Pesan sukses/error -->
     <?php if ($error): ?>
@@ -477,20 +525,23 @@ $resultProduk = $conn->query($sqlProduk);
     <?php endif; ?>
 
     <!-- Search Form -->
-    <div class="search-container">
-        <form method="GET" action="">
-            <input type="text" name="search" placeholder="Cari kode, ukuran, stok, harga" value="<?= htmlspecialchars($searchTerm) ?>">
-            <button type="submit">Search</button>
+     <div class="text-center">
+    <div class="search-container text-center">
+        <form id="form-search" method="GET" action="">
+            <input type="text" name="search" placeholder="Cari kode, ukuran, stok, harga" value="<?= isset($searchTerm) ? htmlspecialchars($searchTerm) : '' ?>">
+            <button type="submit" class="submit-btn">Search</button>
         </form>
     </div>
 
+    <button class="btn btn-primary btn-sm" id="addProductBtn">Tambah Produk</button>
+    </div>
     <table>
         <thead>
             <tr>
                 <th>Kode Barang</th>
+                <th>Ukuran</th>
                 <th>Harga</th>
                 <th>Stok Gudang</th>
-                <th>Ukuran</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -498,17 +549,46 @@ $resultProduk = $conn->query($sqlProduk);
         <?php while ($row = $resultProduk->fetch_assoc()): ?>
             <tr>
                 <td><?= $row['kode_barang'] ?></td>
-                <td>Rp <?= number_format($row['harga'],0,',','.') ?></td>
-                <td><?= $row['stok_gudang'] ?></td>
                 <td><?= $row['ukuran'] ?></td>
+                <td><?= number_format($row['harga'],0,',','.') ?></td>
+                <td><?= $row['stok_gudang'] ?></td>
                 <td>
                     <button class="btn btn-warning btn-sm btn-edit" onclick="openEditModal(<?= $row['id_barang'] ?>, <?= $row['harga'] ?>, <?= $row['stok_gudang'] ?>, <?= $row['id_ukuran'] ?>)">Edit</button>
-                    <a href="?action=delete&id_barang=<?= $row['id_barang'] ?>" class="btn btn-danger btn-sm btn-delete" onclick="return confirm('Yakin ingin menghapus produk ini?')">Delete</a>
+                    <a href="?action=delete&id_barang=<?= $row['id_barang'] ?>" class="btn btn-danger btn-sm btn-delete" id="delete-btn-<?= $row['id_barang'] ?>">Delete</a>
                 </td>
             </tr>
         <?php endwhile; ?>
         </tbody>
     </table>
+</div>
+
+<!-- Modal untuk Menambahkan Produk -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <h3>Tambah Produk Baru</h3>
+        <form method="POST" action="">
+            <label for="kode_barang">Kode Barang:</label>
+            <input type="text" id="kode_barang" name="kode_barang" required>
+            
+            <label for="harga">Harga (min 1000):</label>
+            <input type="number" id="harga" name="harga" required>
+            
+            <label for="jumlah">Stok Gudang:</label>
+            <input type="number" id="jumlah" name="jumlah" required>
+            
+            <label for="id_ukuran">Ukuran:</label>
+            <select name="id_ukuran" id="id_ukuran" required>
+                <?php while ($row = $resultUkuran->fetch_assoc()): ?>
+                    <option value="<?= $row['id_ukuran'] ?>"><?= $row['ukuran'] ?></option>
+                <?php endwhile; ?>
+            </select>
+            
+            <div class="modal-buttons">
+                <button type="submit" name="submit" class="btn">Simpan Produk</button>
+                <button type="button" class="btn" id="closeModalBtn">Tutup</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Modal Edit -->
@@ -538,9 +618,143 @@ $resultProduk = $conn->query($sqlProduk);
     </div>
 </div>
 
-</script>
-
 <script>
+     // Menangani tombol "Tambah Produk"
+     document.getElementById('addProductBtn').addEventListener('click', function() {
+        document.getElementById('productModal').style.display = 'flex';
+    });
+
+    // Menangani tombol "Tutup" untuk modal
+    document.getElementById('closeModalBtn').addEventListener('click', function() {
+        document.getElementById('productModal').style.display = 'none';
+    });
+
+    // Mengatur flag untuk arah sorting
+    let sortAsc = {
+        id_barang: true,
+        kode_barang: true,
+        harga: true,
+        stok: true,
+        ukuran: true
+    };
+
+    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
+    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
+
+    // Mengambil elemen header yang bisa disortir
+    const headers = document.querySelectorAll('table th');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+            const columnName = header.id.replace('sort', '').toLowerCase();
+            sortTable(columnIndex, columnName);
+        });
+    });
+
+    // Fungsi untuk sorting tabel
+    function sortTable(columnIndex, columnName) {
+        const table = document.getElementById('productTable');
+        const rows = Array.from(table.rows).slice(1); // Mengambil semua baris kecuali header
+
+        // Menentukan apakah urutan akan menaik atau menurun
+        const isAscending = sortAsc[columnName];
+
+        // Sorting berdasarkan kolom yang diklik
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+
+            // Parsing harga, ukuran, dan ID Barang untuk sorting yang benar
+            let valueA, valueB;
+            if (columnName === 'harga') {
+                valueA = parseFloat(cellA.replace(/[^0-9.-]+/g, "")); // Hapus simbol mata uang dan parse float
+                valueB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+            } else if (columnName === 'ukuran') {
+                valueA = ukuranOrder.indexOf(cellA); // Menyusun berdasarkan urutan ukuran
+                valueB = ukuranOrder.indexOf(cellB);
+            } else if (columnName === 'id_barang') {
+                valueA = parseInt(cellA); // ID Barang disortir secara numerik
+                valueB = parseInt(cellB);
+            } else {
+                valueA = cellA;
+                valueB = cellB;
+            }
+
+            if (isAscending) {
+                return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+                return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+        });
+
+        // Menyusun ulang baris tabel
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle arah sorting
+        sortAsc[columnName] = !isAscending;
+    }
+
+    // SweetAlert untuk success atau error setelah simpan produk
+    <?php if (isset($success) && $success === true): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Produk Berhasil Ditambahkan',
+            text: 'Produk baru berhasil disimpan ke dalam database.',
+        });
+    <?php elseif (isset($error) && $error === true): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '<?= isset($error_message) ? $error_message : "Terjadi kesalahan." ?>',
+        });
+    <?php endif; ?>
+
+    document.querySelector('form').onsubmit = function(e) {
+        let harga = document.getElementById('harga').value;
+        if (harga < 1000) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus lebih dari 100!',
+            });
+        }
+        if (harga % 100 !== 0) {
+            e.preventDefault(); // Mencegah form dikirim
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Harga harus dalam ribu rupiah! (misal: 1250 (x), 1200 (v))',
+            });
+        }
+    };
+
+    document.querySelectorAll('.btn-delete').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Mencegah default action (navigasi)
+
+            const deleteUrl = this.href; // Ambil URL dari atribut href
+            const id_barang = this.id.split('-')[2]; // Ambil ID barang dari tombol yang diklik
+
+            // Gunakan SweetAlert untuk konfirmasi
+            Swal.fire({
+                title: 'Yakin ingin menghapus produk ini?',
+                text: 'Data yang sudah dihapus tidak bisa dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika user mengonfirmasi, lanjutkan ke URL untuk menghapus
+                    window.location.href = deleteUrl;
+            }
+            });
+        });
+    });
+
 function openEditModal(id_barang, harga, stok_gudang, id_ukuran) {
     document.getElementById('edit_id_barang').value = id_barang;
     document.getElementById('edit_harga').value = harga;
@@ -553,13 +767,16 @@ function openEditModal(id_barang, harga, stok_gudang, id_ukuran) {
 function closeEditModal() {
     document.getElementById('editModal').style.display = 'none';
 }
+document.getElementById('form-search').onsubmit = function(e) {
+};
 </script>
 
-<footer class="text-center py-3">
-  <div class="container1">
-    <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
-    <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
-  </div>
+<footer class="footer">
+    <div class="container1 text-center">
+        <p class="mb-0">&copy; <?php echo date("Y"); ?> MUSE COLLECTION. All rights reserved.</p>
+        <p class="mb-0">Email: info@musecollection.com | Phone: (123) 456-7890</p>
+    </div>
 </footer>
+
 </body>
 </html>
