@@ -116,20 +116,22 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
             background-color: #f8f9fa;
         }
         html, body {
-            height: 100%; 
-            margin: 0;
-            display: flex;
-            flex-direction: column;
+            height: 100%; /* Mengatur tinggi html dan body 100% */
+            margin: 0; /* Menghilangkan margin default */
+            display: flex; /* Menggunakan flexbox */
+            flex-direction: column; /* Mengatur arah flex menjadi kolom */
         }
 
         footer {
-            background-color: #332D2D;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            width: 100%;
-            margin-top: auto; /* Memaksa footer selalu di bawah */
-            flex-shrink: 0; /* Menjaga footer agar tidak mengecil */
+            position: fixed; /* Mengatur posisi footer tetap */
+            left: 0; /* Mengatur posisi kiri */
+            bottom: 0; /* Mengatur posisi bawah */
+            width: 100%; /* Mengatur lebar footer 100% */
+            background-color: #332D2D; /* Warna latar belakang footer */
+            color: white; /* Warna teks footer */
+            text-align: center; /* Menyelaraskan teks ke tengah */
+            padding: 20px 0; /* Padding atas dan bawah */
+            z-index: 1000; /* Pastikan footer di atas elemen lain */
         }
         .navbar-nav .nav-item1 .nav-link {
             color: white;
