@@ -17,7 +17,6 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Harga</title>
-    <!-- <link rel="stylesheet" href="Latihan Test (card form) Style.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -277,9 +276,9 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
                                   // Setelah tombol "OK" diklik, kosongkan field
                                   if (result.isConfirmed) {
                                       $("#findKode").val("");
-                                      $("#inputKode").val("");
-                                      $("#inputStok").val("");
-                                      $("#inputHarga").val("");
+                                      $("#inputKode").val("").prop("disabled", true);
+                                      $("#inputStok").val("").prop("disabled", true);
+                                      $("#inputHarga").val("").prop("disabled", true);
                                   }
                               });
                             }, 100); // Tunggu 100ms untuk memastikan data terlihat
@@ -320,6 +319,16 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
             return;
         }
 
+        // Harga harus lebih dari 1000
+        if (parseInt(hargaBaru) < 1000) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Harga Tidak Valid',
+                text: 'Harga harus lebih dari 1000 rupiah',
+            });
+            return;
+        }
+
       // Log data yang dikirim ke server untuk debugging
       console.log("Kode Barang:", kodeBarang);
       console.log("Harga Baru:", hargaBaru);
@@ -341,9 +350,9 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
                     }).then((result) => {
                           if (result.isConfirmed) {
                               $("#findKode").val("");
-                              $("#inputKode").val("");
-                              $("#inputStok").val("");
-                              $("#inputHarga").val("");
+                              $("#inputKode").val("").prop("disabled", true);
+                              $("#inputStok").val("").prop("disabled", true);
+                              $("#inputHarga").val("").prop("disabled", true);
                           }
                       });
                 } 

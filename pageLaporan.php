@@ -28,6 +28,18 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 </head>
 
 <style>
+    #laporanTable thead th {
+        background-color: #f2f2f2; 
+        color: #333;         
+        font-weight: bold; 
+        text-align: center;
+        border-bottom: 2px solid #ddd;
+    }
+
+    #laporanTable thead th:hover {
+        background-color: #e0e0e0;
+    }
+
     table th, table td {
         padding: 10px;
         text-align: left;
@@ -103,18 +115,23 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
         .dropdown-item:hover {
             background-color: #f8f9fa;
         }
+        html, body {
+            height: 100%; /* Mengatur tinggi html dan body 100% */
+            margin: 0; /* Menghilangkan margin default */
+            display: flex; /* Menggunakan flexbox */
+            flex-direction: column; /* Mengatur arah flex menjadi kolom */
+        }
+
         footer {
+            position: fixed; /* Mengatur posisi footer tetap */
+            left: 0; /* Mengatur posisi kiri */
+            bottom: 0; /* Mengatur posisi bawah */
+            width: 100%; /* Mengatur lebar footer 100% */
             background-color: #332D2D; /* Warna latar belakang footer */
             color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
-            padding: 20px 0;
-            width: 100%;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
+            text-align: center; /* Menyelaraskan teks ke tengah */
+            padding: 20px 0; /* Padding atas dan bawah */
+            z-index: 1000; /* Pastikan footer di atas elemen lain */
         }
         .navbar-nav .nav-item1 .nav-link {
             color: white;
@@ -203,7 +220,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
 
 <!-- TABEL LAPORAN -->
 <div class="container mt-4">
-    <table class="table table-bordered mx-auto" style="width: auto;">
+    <table id="laporanTable" class="table table-bordered mx-auto" style="width: auto;">
         <thead>
             <tr>
                 <th>Timestamp Transaksi</th>

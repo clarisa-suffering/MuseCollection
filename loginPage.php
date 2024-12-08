@@ -19,48 +19,48 @@
 
         .login-container {
             background-color: #fff;
-            padding: 40px; /* Menambahkan padding lebih banyak */
+            padding: 40px; 
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px; /* Memperbesar lebar container */
+            max-width: 500px; 
         }
 
         .login-container h2 {
-            margin-bottom: 30px; /* Memberikan jarak lebih banyak antara judul dan form */
+            margin-bottom: 30px; 
             text-align: center;
             font-weight: bold;
             color: #333;
-            font-size: 24px; /* Memperbesar ukuran font judul */
+            font-size: 24px;
         }
 
         .form-group {
-            margin-bottom: 20px; /* Menambahkan jarak lebih banyak antar elemen form */
+            margin-bottom: 20px; 
         }
 
         .form-group label {
             font-weight: bold;
             color: #555;
-            font-size: 16px; /* Memperbesar ukuran font label */
+            font-size: 16px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px; /* Menambah padding input */
+            padding: 12px; 
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 16px; /* Memperbesar font pada input */
+            font-size: 16px;
         }
 
         button[type="submit"] {
             width: 100%;
             background-color: #007bff;
             color: #fff;
-            padding: 12px; /* Menambah padding tombol */
+            padding: 12px;
             border: none;
             border-radius: 5px;
-            font-size: 18px; /* Memperbesar ukuran font tombol */
+            font-size: 18px; 
             cursor: pointer;
         }
 

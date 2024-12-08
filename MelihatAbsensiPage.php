@@ -180,33 +180,34 @@
             <input type="date" id="tanggal" class="form-control">
         </div>
 
-        <!-- Input Search Nama -->
+        <!-- Input Search Nama Karyawan -->
         <div class="flex-grow-1">
-            <label for="id_karyawan" class="form-label">Cari ID Karyawan:</label>
-            <input type="text" id="id_karyawan" class="form-control" placeholder="ID Karyawan">
+            <label for="nama" class="form-label">Cari Nama Karyawan:</label>
+            <input type="text" id="nama" class="form-control" placeholder="Nama Karyawan">
         </div>
     </div>
 
     <!-- Tombol Filter -->
-     <div class="container text-center mb-4">
-    <button onclick="filterAbsensi()" class="btn btn-primary">Tampilkan</button>
+    <div class="container text-center mb-4">
+        <button onclick="filterAbsensi()" class="btn btn-primary">Tampilkan</button>
     </div>
-        <!-- Tabel Absensi -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID Absensi</th>
-                    <th>ID Karyawan</th>
-                    <th>Jam</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="data-absensi">
-                <tr>
-                    <td colspan="4">Tidak ada data.</td>
-                </tr>
-            </tbody>
-        </table>
+
+    <!-- Tabel Absensi -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Kode Karyawan</th>
+                <th>Nama Karyawan</th>
+                <th>Jam</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="data-absensi">
+            <tr>
+                <td colspan="4">Tidak ada data.</td>
+            </tr>
+        </tbody>
+    </table>
     </div>
 
     <script>
@@ -219,18 +220,18 @@
         // Fungsi untuk menampilkan data absensi
         function filterAbsensi() {
             const tanggal = document.getElementById('tanggal').value;
-            const id_karyawan = document.getElementById('id_karyawan').value;
+            const nama = document.getElementById('nama').value;
 
             // Debugging: log URL yang dikirimkan
-            console.log(`Fetching data from: absensi.php?tanggal=${tanggal}&id_karyawan=${id_karyawan}`);
+            console.log(`Fetching data from: MelihatAbsensi.php?tanggal=${tanggal}&nama=${nama}`);
 
-            // Panggil API absensi.php
-            let url = `MelihatAbsensi.php?tanggal=${tanggal}&id_karyawan=${id_karyawan}`;
+            // Panggil API MelihatAbsensi.php
+            let url = `MelihatAbsensi.php?tanggal=${tanggal}&nama=${nama}`;
             if (!tanggal) {
                 url = url.replace("&tanggal=", "");
             }
-            if (!id_karyawan) {
-                url = url.replace("&id_karyawan=", "");
+            if (!nama) {
+                url = url.replace("&nama=", "");
             }
 
             fetch(url, {
@@ -249,8 +250,8 @@
                         const status = row.status === 1 ? 'Hadir' : 'Tidak Hadir';
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td>${row.id_absensi}</td>
-                            <td>${row.id_karyawan}</td>
+                            <td>${row.kode_karyawan}</td>
+                            <td>${row.nama}</td>
                             <td>${row.jam}</td>
                             <td>${status}</td>
                         `;

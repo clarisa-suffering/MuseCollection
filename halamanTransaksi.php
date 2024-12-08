@@ -1,3 +1,4 @@
+
 <?php
 session_set_cookie_params(0);
 
@@ -28,7 +29,6 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
         .hidden {
             display: none;
         }
-         /* Navbar */
          .navbar {
             width: 100%;
             margin: 0;
@@ -98,9 +98,9 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
             background-color: #f8f9fa;
         }
         footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
             padding: 20px 0;
             width: 100%;
         }
@@ -121,10 +121,10 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
                     border-radius: 5px;
         }
         html, body {
-            height: 100%; /* Mengatur tinggi html dan body menjadi 100% */
-            margin: 0; /* Menghilangkan margin default */
-            display: flex; /* Menggunakan flexbox */
-            flex-direction: column; /* Mengatur arah flex menjadi kolom */
+            height: 100%; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
         }
 
         footer {
@@ -133,17 +133,17 @@ if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'kasir' && $_SESSI
             text-align: center;
             padding: 20px 0;
             width: 100%;
-            margin-top: auto; /* Agar footer tetap di bawah */
-            position: relative; /* Agar tidak terpengaruh modal */
-            z-index: 1; /* Membuat footer berada di bawah modal */
+            margin-top: auto;
+            position: relative; 
+            z-index: 1; 
         }
 
         .container {
-            flex: 1 0 auto; /* Memastikan konten utama berada di atas dan tidak tumpang tindih dengan footer */
+            flex: 1 0 auto; 
         }
 
         .modal {
-            z-index: 1050; /* SweetAlert modal memiliki z-index lebih tinggi dari konten */
+            z-index: 1050; 
         }
 
 
