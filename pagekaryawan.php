@@ -257,7 +257,7 @@ if ($search) {
                         <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-exchange-alt"></i> Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                 </li>
             </ul>
         </div>
