@@ -64,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 
     <style>
+        .h2{
+            text-align:center;
+        }
       .navbar {
             width: 100%;
             margin: 0;
@@ -282,7 +285,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </nav>
     <div class="container mt-5">
+    <div class="text-center">
         <h2>Form Absensi Karyawan</h2>
+        </div>
         <form method="POST" action="">
             <div class="mb-3">
                 <label for="id_karyawan" class="form-label">Nama Karyawan</label>
@@ -302,7 +307,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="container mt-5">
+        <div class="text-center">
         <h2>Daftar Absensi Hari Ini</h2>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
