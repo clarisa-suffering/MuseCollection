@@ -1,16 +1,16 @@
 <?php
 include 'koneksi.php';
 
-// session_set_cookie_params(0);
+session_set_cookie_params(0);
 
-// session_start();  // Start the session
+session_start();  // Start the session
 
-// // Check if the session variable 'role' exists and if it's one of the allowed roles
-// if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
-//     // Redirect to login page if not logged in as pemilik
-//     header("Location: loginPage.php");
-//     exit();
-// }
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
+    // Redirect to login page if not logged in as pemilik
+    header("Location: loginPage.php");
+    exit();
+}
 
 $error = false;
 $error_message = '';
@@ -224,6 +224,9 @@ $resultProduk = $conn->query($sqlProduk);
         table th {
             background-color: #f2f2f2;
         }
+        tr, td{
+            text-align: center;
+        }
         .btn-edit, .btn-delete {
             margin-right: 5px;
         }
@@ -287,12 +290,230 @@ $resultProduk = $conn->query($sqlProduk);
             color: white;
             border-radius: 4px;
         }
+        .navbar {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #343a40;
+        }
+
+        .navbar .container-fluid {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .navbar-nav .nav-item {
+            list-style: none;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: white;
+            padding: 15px 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        .dropdown-menu {
+            left: 0;
+            right: auto;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+        }
+
+        .dropdown-submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: #333;
+            padding: 10px 20px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        .navbar-nav .nav-item .nav-link[href="loginPage.php"]:hover {
+        background-color: red;
+        border-radius: 5px; /* Opsional, untuk konsistensi dengan hover lainnya */
+        }
+
+      @media (min-width: 992px) {
+          .dropdown-submenu:hover .dropdown-menu {
+              display: block;
+          }
+      }
+
+      .dropdown-submenu.show .dropdown-menu {
+          display: block;
+      }
+
+      @media (max-width: 991px) {
+          .dropdown-menu .show {
+              display: block !important;
+          }
+
+          .dropdown-submenu .dropdown-menu {
+              position: relative;
+              left: 0;
+              top: 0;
+              margin-left: 1rem;
+          }
+      }
+
+       .navbar-toggler-icon {
+        background-image: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 24px;
+        position: relative;
+    }
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon div {
+        content: '';
+        background-color: white; /* Warna garis putih */
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        left: 0;
+    }
+    .navbar-toggler-icon::before {
+        top: 0;
+    }
+    .navbar-toggler-icon div {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .navbar-toggler-icon::after {
+        bottom: 0;
+    }
+        .container {
+            flex: 1; 
+            margin-bottom: 20px; 
+        }
+
+        footer {
+            background-color: #332D2D;
+            color: white; 
+            margin-top: auto; 
+            padding: 20px 0;
+            width: 100%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
     </style>
+       <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
+              dropdownToggle.addEventListener('click', function (e) {
+                  var submenu = this.nextElementSibling;
+                  if (submenu) {
+                      submenu.classList.toggle('show');
+                  }
+                  e.preventDefault();
+                  e.stopPropagation(); // Mencegah penutupan dropdown utama
+              });
+          });
+
+          // Menutup dropdown saat klik di luar
+          document.addEventListener('click', function (e) {
+              document.querySelectorAll('.dropdown-menu .show').forEach(function (openSubmenu) {
+                  openSubmenu.classList.remove('show');
+              });
+          });
+      });
+  </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="dashboard.php">
+          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> HARTONO COLLECTION
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon">
+            <div></div>
+          </span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="menambahProdukBaru.php"><i class="fas fa-box"></i> Produk</a></li>
+                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-store-alt"></i> Stok
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="pageStokToko.php">Toko</a></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Gudang</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="lihatStokHargaBarangGudang.php">Lihat Stok</a></li>
+                                <li><a class="dropdown-item" href="tambahStokGudang.php">Tambah Stok</a></li>
+                                <li><a class="dropdown-item" href="pindah_stokGudang.php">Pindah Stok</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="halamanTransaksi.php"><i class="fas fa-exchange-alt"></i> Transaksi</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-users"></i> Karyawan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="absensi.php">Absensi</a></li>
+                        <li><a class="dropdown-item" href="perhitunganGaji.php">Perhitungan Gaji</a></li>
+                        <li><a class="dropdown-item" href="MelihatAbsensiPage.php">List Absensi</a></li>
+                        <li><a class="dropdown-item" href="pageKaryawan.php">Manajemen Karyawan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-file-alt"></i> Laporan</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="pageLaporan.php">Transaksi</a></li>
+                        <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </nav>
 <div class="container">
-    <h1>Daftar Produk</h1>
+    <h1 class="text-center">Daftar Produk</h1>
 
     <!-- Pesan sukses/error -->
     <?php if ($error): ?>
@@ -304,22 +525,23 @@ $resultProduk = $conn->query($sqlProduk);
     <?php endif; ?>
 
     <!-- Search Form -->
-    <div class="search-container">
+     <div class="text-center">
+    <div class="search-container text-center">
         <form id="form-search" method="GET" action="">
             <input type="text" name="search" placeholder="Cari kode, ukuran, stok, harga" value="<?= isset($searchTerm) ? htmlspecialchars($searchTerm) : '' ?>">
             <button type="submit" class="submit-btn">Search</button>
         </form>
     </div>
 
-    <button class="btn" id="addProductBtn">Tambah Produk</button>
-
-    <table>
+    <button class="btn btn-primary btn-sm" id="addProductBtn">Tambah Produk</button>
+    </div>
+    <table id="productTable">
         <thead>
             <tr>
-                <th>Kode Barang</th>
-                <th>Ukuran</th>
-                <th>Harga</th>
-                <th>Stok Gudang</th>
+                <th id="sortKodeBarang">Kode Barang</th>
+                <th id="sortUkuran">Ukuran</th>
+                <th id="sortHarga">Harga</th>
+                <th id="sortStok">Stok Gudang</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -331,7 +553,7 @@ $resultProduk = $conn->query($sqlProduk);
                 <td><?= number_format($row['harga'],0,',','.') ?></td>
                 <td><?= $row['stok_gudang'] ?></td>
                 <td>
-                    <button class="btn btn-primary btn-sm btn-edit" onclick="openEditModal(<?= $row['id_barang'] ?>, <?= $row['harga'] ?>, <?= $row['stok_gudang'] ?>, <?= $row['id_ukuran'] ?>)">Edit</button>
+                    <button class="btn btn-warning btn-sm btn-edit" onclick="openEditModal(<?= $row['id_barang'] ?>, <?= $row['harga'] ?>, <?= $row['stok_gudang'] ?>, <?= $row['id_ukuran'] ?>)">Edit</button>
                     <a href="?action=delete&id_barang=<?= $row['id_barang'] ?>" class="btn btn-danger btn-sm btn-delete" id="delete-btn-<?= $row['id_barang'] ?>">Delete</a>
                 </td>
             </tr>
@@ -409,15 +631,14 @@ $resultProduk = $conn->query($sqlProduk);
 
     // Mengatur flag untuk arah sorting
     let sortAsc = {
-        id_barang: true,
         kode_barang: true,
         harga: true,
         stok: true,
         ukuran: true
     };
 
-    // Definisikan urutan untuk ukuran (Small, Medium, Large, XXL, dsb.)
-    const ukuranOrder = ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
+    // Definisikan urutan untuk ukuran (Small, Medium, Large)
+    const ukuranOrder = ['S', 'M', 'L'];
 
     // Mengambil elemen header yang bisa disortir
     const headers = document.querySelectorAll('table th');
@@ -548,6 +769,13 @@ function closeEditModal() {
 document.getElementById('form-search').onsubmit = function(e) {
 };
 </script>
+
+<footer class="footer">
+    <div class="container1 text-center">
+        <p class="mb-0">&copy; <?php echo date("Y"); ?> HARTONO COLLECTION. All rights reserved.</p>
+        <p class="mb-0">Email: info@hartonocollection.com | Phone: (123) 456-7890</p>
+    </div>
+</footer>
 
 </body>
 </html>
