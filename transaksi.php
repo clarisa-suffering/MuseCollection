@@ -7,6 +7,7 @@ class Transaksi {
     public $harga_total;
     public $status_transaksi;
     public $tanggal_transaksi;
+    public $id_pelanggan;
 
     // Detail transaksi
     public $details = [];

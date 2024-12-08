@@ -121,76 +121,6 @@ $resultLaporan = $conn->query($sqlLaporan);
             padding: 0;
         }
 
-        /* Navbar */
-        .navbar {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #343a40;
-        }
-
-        .navbar .container-fluid {
-            max-width: 100%;
-            padding: 0;
-        }
-
-        .navbar-brand {
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .navbar-nav {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .navbar-nav .nav-item {
-            list-style: none;
-        }
-
-        .navbar-nav .nav-item .nav-link {
-            color: white;
-            padding: 15px 20px;
-            display: block;
-            text-align: center;
-        }
-
-        .navbar-nav .nav-item .nav-link:hover {
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-
-        /* Dropdown */
-        .dropdown-menu {
-            left: 0;
-            right: auto;
-        }
-
-        .dropdown-submenu {
-            position: relative;
-        }
-
-        .dropdown-submenu .dropdown-menu {
-            display: none;
-            position: absolute;
-            left: 100%;
-            top: 0;
-        }
-
-        .dropdown-submenu:hover .dropdown-menu {
-            display: block;
-        }
-
-        .dropdown-item {
-            color: #333;
-            padding: 10px 20px;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f8f9fa;
-        }
-
         /* Main Container */
         .container {
             max-width: 1200px;
@@ -263,34 +193,175 @@ $resultLaporan = $conn->query($sqlLaporan);
             display: flex;
             flex-direction: column;
         }
-        .navbar-nav .nav-item1 .nav-link {
+        .navbar {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #343a40;
+        }
+
+        .navbar .container-fluid {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .navbar-nav .nav-item {
+            list-style: none;
+        }
+
+        .navbar-nav .nav-item .nav-link {
             color: white;
             padding: 15px 20px;
             display: block;
             text-align: center;
         }
-        .navbar-nav .nav-item1 .nav-link:hover {
-                    background-color: #ff0000;
-                    border-radius: 5px;
+
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #007bff;
+            border-radius: 5px;
         }
 
+        .dropdown-menu {
+            left: 0;
+            right: auto;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+        }
+
+        .dropdown-submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: #333;
+            padding: 10px 20px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        .navbar-nav .nav-item .nav-link[href="loginPage.php"]:hover {
+        background-color: red;
+        border-radius: 5px; /* Opsional, untuk konsistensi dengan hover lainnya */
+        }
+
+      @media (min-width: 992px) {
+          .dropdown-submenu:hover .dropdown-menu {
+              display: block;
+          }
+      }
+
+      .dropdown-submenu.show .dropdown-menu {
+          display: block;
+      }
+
+      @media (max-width: 991px) {
+          .dropdown-menu .show {
+              display: block !important;
+          }
+
+          .dropdown-submenu .dropdown-menu {
+              position: relative;
+              left: 0;
+              top: 0;
+              margin-left: 1rem;
+          }
+      }
+
+       .navbar-toggler-icon {
+        background-image: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 24px;
+        position: relative;
+    }
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon div {
+        content: '';
+        background-color: white; /* Warna garis putih */
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        left: 0;
+    }
+    .navbar-toggler-icon::before {
+        top: 0;
+    }
+    .navbar-toggler-icon div {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .navbar-toggler-icon::after {
+        bottom: 0;
+    }
 
     </style>
+      <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
+              dropdownToggle.addEventListener('click', function (e) {
+                  var submenu = this.nextElementSibling;
+                  if (submenu) {
+                      submenu.classList.toggle('show');
+                  }
+                  e.preventDefault();
+                  e.stopPropagation(); // Mencegah penutupan dropdown utama
+              });
+          });
+
+          // Menutup dropdown saat klik di luar
+          document.addEventListener('click', function (e) {
+              document.querySelectorAll('.dropdown-menu .show').forEach(function (openSubmenu) {
+                  openSubmenu.classList.remove('show');
+              });
+          });
+      });
+  </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
+        <a class="navbar-brand" href="dashboard.php">
+          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon">
+            <div></div>
+          </span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="fas fa-home"></i> Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="menambahProdukBaru.php"><i class="fas fa-box"></i> Produk</a></li>
-                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga </a></li>
+                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-store-alt"></i> Stok</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-store-alt"></i> Stok
+                    </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="pageStokToko.php">Toko</a></li>
                         <li class="dropdown-submenu">
@@ -320,11 +391,12 @@ $resultLaporan = $conn->query($sqlLaporan);
                         <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
                     </ul>
                 </li>
-                <li class="nav-item1"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-exchange-alt"></i> Logout</a></li>
+                </li>
             </ul>
         </div>
     </div>
-</nav> 
+  </nav>
     <div class="container">
         <h1>Laporan Stok Barang Gudang</h1>
         
