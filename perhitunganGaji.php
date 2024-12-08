@@ -1,14 +1,10 @@
 <?php
-// Include koneksi database dan kelas-kelas terkait
+// Include koneksi database dan kelas layanan baru
 include 'koneksi.php';
-include 'KaryawanRepository.php';
-include 'AbsensiRepository.php';
-include 'GajiCalculator.php';
+include 'KaryawanService.php';
 
-// Inisialisasi objek repository dan calculator
-$karyawanRepo = new KaryawanRepository($conn);
-$absensiRepo = new AbsensiRepository($conn);
-$gajiCalc = new GajiCalculator($karyawanRepo, $absensiRepo);
+// Inisialisasi service
+$service = new KaryawanService($conn);
 
 $alert = '';
 $details = '';
@@ -21,8 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Hitung gaji untuk semua karyawan non-pemilik
         $result = $conn->query("SELECT id_karyawan FROM karyawan WHERE kode_karyawan NOT RLIKE '^[pP][0-9]+'");
         while ($row = $result->fetch_assoc()) {
-            $gajiCalc->hitungGaji($row['id_karyawan']);
+            $service->hitungGaji($row['id_karyawan']);
         }
+
         $alert = "<script>
             Swal.fire({
                 icon: 'success',
@@ -32,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         </script>";
     } elseif ($action === 'hitung' && !empty($_POST['id_karyawan'])) {
         $id_karyawan = (int)$_POST['id_karyawan'];
-        $detail = $gajiCalc->hitungGaji($id_karyawan);
+        $detail = $service->hitungGaji($id_karyawan);
         if ($detail) {
             // Buat tampilan detail dalam card yang lebih menarik
             $details = "
@@ -64,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     } elseif ($action === 'detail' && !empty($_POST['id_karyawan'])) {
         $id_karyawan = (int)$_POST['id_karyawan'];
-        $detail = $gajiCalc->detailGaji($id_karyawan);
+        $detail = $service->detailGaji($id_karyawan);
         if ($detail) {
             // Tabel detail dengan tampilan yang sama
             $details = "
@@ -89,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -316,12 +314,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         </div>
     </div>
   </nav>
-    <div class="container mt-5">
+  <div class="container mt-5">
+        <div class="text-center">
         <h2>Daftar Karyawan</h2>
         <form method="POST" action="">
             <input type="hidden" name="action" value="all">
             <button type="submit" class="btn btn-success mb-3">Hitung Gaji Semua Karyawan</button>
         </form>
+        </div>
         <table class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>

@@ -365,4 +365,3 @@ INSERT INTO `detail_produk` (`id_detprod`, `id_barang`, `id_ukuran`, `stok_toko`
 (10, 4, 1, 1500, 5000, 1),
 (11, 4, 2, 1300, 3500, 1),
 (12, 4, 3, 2000, 2000, 1);
-
