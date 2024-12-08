@@ -339,3 +339,30 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+INSERT INTO `ukuran` (`id_ukuran`, `ukuran`, `status_aktif`) VALUES
+(1, 'S', 1),
+(2, 'M', 1),
+(3, 'L', 1);
+
+INSERT INTO `produk` (`id_barang`, `kode_barang`, `harga`, `status_aktif`) VALUES
+(1, 'TW001', 200000, 1),
+(2, 'TM001', 300000, 1),
+(3, 'BW001', 250000, 1),
+(4, 'BM001', 150000, 1);
+
+INSERT INTO `detail_produk` (`id_detprod`, `id_barang`, `id_ukuran`, `stok_toko`, `stok_gudang`, `status_aktif`) VALUES
+(1, 1, 1, 1000, 2000, 1),
+(2, 1, 2, 2000, 2500, 1),
+(3, 1, 3, 1000, 4000, 1),
+(4, 2, 1, 1500, 5000, 1),
+(5, 2, 2, 1000, 3000, 1),
+(6, 2, 3, 2000, 2000, 1),
+(7, 3, 1, 1500, 5000, 1),
+(8, 3, 2, 3000, 3000, 1),
+(9, 3, 3, 1000, 2500, 1),
+(10, 4, 1, 1500, 5000, 1),
+(11, 4, 2, 1300, 3500, 1),
+(12, 4, 3, 2000, 2000, 1);
+
