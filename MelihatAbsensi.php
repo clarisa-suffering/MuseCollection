@@ -12,7 +12,6 @@ $query = "
     FROM absensi
     INNER JOIN karyawan ON absensi.id_karyawan = karyawan.id_karyawan
     WHERE 1=1
-    ORDER BY absensi.jam ASC
 ";
 
 // Tambahkan parameter filter
