@@ -1,4 +1,16 @@
 <?php
+
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik') {
+    // Redirect to login page if not logged in as pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+
 // Include koneksi database dan kelas Karyawan
 include 'koneksi.php';
 include 'Karyawan.php';
@@ -211,7 +223,7 @@ if ($search) {
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="dashboard.php">
-          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
+          <img src="img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">

@@ -19,7 +19,7 @@
 
       main {
         flex: 1;
-        background: url('/img/BgTekweb.jpg') no-repeat center center fixed;
+        background: url('img/BgTekweb.jpg') no-repeat center center fixed;
         background-size: cover;
         position: relative;
         display: flex;
@@ -203,7 +203,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="dashboard.php">
-          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
+          <img src="img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">
