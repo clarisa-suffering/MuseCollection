@@ -250,7 +250,7 @@ if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] !== 'pemilik' && $_SESS
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-users"></i> Karyawan</a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="absensi.php">Absensi</a></li>
-                        <li><a class="dropdown-item" href="perhitunganGaji.php">Perhitungan Gaji</a></li>
+                        <!-- <li><a class="dropdown-item" href="perhitunganGaji.php">Perhitungan Gaji</a></li> -->
                         <li><a class="dropdown-item" href="MelihatAbsensiPage.php">List Absensi</a></li>
                         <li><a class="dropdown-item" href="pageKaryawan.php">Manajemen Karyawan</a></li>
                     </ul>
