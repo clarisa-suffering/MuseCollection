@@ -464,7 +464,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo '<label for="id_detprod">Pilih Produk:</label>';
                 echo '<select name="id_detprod" required>';
                 foreach ($produk_list as $produk) {
-                    echo '<option value="' . $produk['id_detprod'] . '">' . $produk['kode_barang'] . ' - ' . $produk['ukuran'] . ' - ' . number_format($produk['harga'], 0, ',', '.') . '</option>';
+                    echo '<option value="' . $produk['id_detprod'] . '">' . $produk['kode_barang'] . ' - ' . $produk['ukuran'] . ' - Rp ' . number_format($produk['harga'], 0, ',', '.') . '</option>';
                 }
                 echo '</select>';
                 echo '</div>';
