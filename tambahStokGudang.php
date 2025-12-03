@@ -1,4 +1,15 @@
 <?php
+session_set_cookie_params(0);
+
+session_start();  // Start the session
+
+// Check if the session variable 'role' exists and if it's one of the allowed roles
+if (!isset($_SESSION['jabatan']) || ($_SESSION['jabatan'] !== 'penjaga gudang' && $_SESSION['jabatan'] !== 'pemilik')) {
+    // Redirect to login page if not logged in as kasir or pemilik
+    header("Location: loginPage.php");
+    exit();
+}
+
 // Menghubungkan koneksi database yang sudah ada
 include('koneksi.php');
 
@@ -116,6 +127,98 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: #333;
             margin-top: 20px;
         }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;  
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; 
+        }
+
+        .notification {
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        select {
+            font-size: 16px;
+        }
+
+        .form-group input[type="number"] {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+        }
+        footer {
+            background-color: #332D2D; 
+            color: white; 
+            margin-top: auto; 
+            padding: 20px 0;
+            width: 100%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
         .navbar {
             width: 100%;
             margin: 0;
@@ -155,7 +258,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 5px;
         }
 
-        /* Dropdown */
         .dropdown-menu {
             left: 0;
             right: auto;
@@ -184,126 +286,108 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .dropdown-item:hover {
             background-color: #f8f9fa;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .navbar-nav .nav-item .nav-link[href="loginPage.php"]:hover {
+        background-color: red;
+        border-radius: 5px; /* Opsional, untuk konsistensi dengan hover lainnya */
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+      @media (min-width: 992px) {
+          .dropdown-submenu:hover .dropdown-menu {
+              display: block;
+          }
+      }
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
-        }
+      .dropdown-submenu.show .dropdown-menu {
+          display: block;
+      }
 
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
+      @media (max-width: 991px) {
+          .dropdown-menu .show {
+              display: block !important;
+          }
 
-        input[type="submit"] {
-            width: 100%;
-            padding: 14px;
-            background-color: #007bff;  /* Tombol berwarna biru */
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+          .dropdown-submenu .dropdown-menu {
+              position: relative;
+              left: 0;
+              top: 0;
+              margin-left: 1rem;
+          }
+      }
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;  /* Warna biru tua saat hover */
-        }
-
-        .notification {
-            padding: 15px;
-            margin-top: 20px;
-            text-align: center;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-
-        .notification.success {
-            background-color: #4CAF50;
-            color: #fff;
-        }
-
-        .notification.error {
-            background-color: #f44336;
-            color: #fff;
-        }
-
-        select {
-            font-size: 16px;
-        }
-
-        .form-group input[type="number"] {
-            font-size: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-        }
-        footer {
-            background-color: #332D2D; /* Warna latar belakang footer */
-            color: white; /* Warna teks footer */
-            margin-top: auto; /* Membuat footer menempel di bawah */
-            padding: 20px 0;
-            width: 100%;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .navbar-nav .nav-item1 .nav-link {
-            color: white;
-            padding: 15px 20px;
-            display: block;
-            text-align: center;
-        }
-        .navbar-nav .nav-item1 .nav-link:hover {
-                    background-color: #ff0000;
-                    border-radius: 5px;
-        }
-
+       .navbar-toggler-icon {
+        background-image: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 24px;
+        position: relative;
+    }
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon div {
+        content: '';
+        background-color: white; /* Warna garis putih */
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        left: 0;
+    }
+    .navbar-toggler-icon::before {
+        top: 0;
+    }
+    .navbar-toggler-icon div {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .navbar-toggler-icon::after {
+        bottom: 0;
+    }
 
     </style>
+      <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.dropdown-submenu > a').forEach(function (dropdownToggle) {
+              dropdownToggle.addEventListener('click', function (e) {
+                  var submenu = this.nextElementSibling;
+                  if (submenu) {
+                      submenu.classList.toggle('show');
+                  }
+                  e.preventDefault();
+                  e.stopPropagation(); // Mencegah penutupan dropdown utama
+              });
+          });
+
+          // Menutup dropdown saat klik di luar
+          document.addEventListener('click', function (e) {
+              document.querySelectorAll('.dropdown-menu .show').forEach(function (openSubmenu) {
+                  openSubmenu.classList.remove('show');
+              });
+          });
+      });
+  </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand"href="dashboard.php">  <img src="\img\logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION</a>
+        <a class="navbar-brand" href="dashboard.php">
+          <img src="/img/logomuse.jpg" style="height: 50px; width: auto;"> MUSE COLLECTION
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon">
+            <div></div>
+          </span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="fas fa-home"></i> Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="menambahProdukBaru.php"><i class="fas fa-box"></i> Produk</a></li>
-                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga </a></li>
+                <li class="nav-item"><a class="nav-link" href="pageHarga.php"><i class="fas fa-tags"></i> Harga</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-store-alt"></i> Stok</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-store-alt"></i> Stok
+                    </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="pageStokToko.php">Toko</a></li>
                         <li class="dropdown-submenu">
@@ -333,11 +417,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <li><a class="dropdown-item" href="membuatLaporanStok.php">Stok Gudang</a></li>
                     </ul>
                 </li>
-                <li class="nav-item1"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="loginPage.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </li>
             </ul>
         </div>
     </div>
-</nav> 
+  </nav>
     <h1>Menambahkan Stok Gudang</h1>
 
     <div class="container">

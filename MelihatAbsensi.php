@@ -4,30 +4,30 @@ include 'koneksi.php';
 
 // Ambil parameter filter
 $tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : '';
-$id_karyawan = isset($_GET['id_karyawan']) ? $_GET['id_karyawan'] : '';
+$nama = isset($_GET['nama']) ? $_GET['nama'] : '';
 
-// Query dasar
+// Query dasar dengan JOIN
 $query = "
-    SELECT id_absensi, id_karyawan, jam, status 
+    SELECT karyawan.kode_karyawan, karyawan.nama, absensi.jam, absensi.status
     FROM absensi
+    INNER JOIN karyawan ON absensi.id_karyawan = karyawan.id_karyawan
     WHERE 1=1
 ";
-
 
 // Tambahkan parameter filter
 $filter_params = [];
 $filter_types = '';
 
 if (!empty($tanggal)) {
-    $query .= " AND DATE(jam) = ?";
+    $query .= " AND DATE(absensi.jam) = ?";
     $filter_params[] = $tanggal;
     $filter_types .= 's';
 }
 
-if (!empty($id_karyawan)) {
-    $query .= " AND id_karyawan = ?";
-    $filter_params[] = $id_karyawan;
-    $filter_types .= 'i'; // 'i' untuk tipe integer
+if (!empty($nama)) {
+    $query .= " AND karyawan.nama LIKE ?";
+    $filter_params[] = "%" . $nama . "%";  // Untuk pencarian berdasarkan nama
+    $filter_types .= 's';
 }
 
 // Siapkan dan eksekusi query

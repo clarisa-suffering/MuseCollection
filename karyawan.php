@@ -39,11 +39,11 @@ class Karyawan {
     // Validasi jabatan berdasarkan kode karyawan
     public function setJabatanOtomatis() {
         if (strtoupper(substr($this->kode_karyawan, 0, 2)) === 'PG') {
-            $this->jabatan = 'Penjaga Gudang';
+            $this->jabatan = 'penjaga gudang';
         } elseif (strtoupper(substr($this->kode_karyawan, 0, 1)) === 'K') {
-            $this->jabatan = 'Karyawan';
+            $this->jabatan = 'kasir';
         } elseif (strtoupper(substr($this->kode_karyawan, 0, 1)) === 'P') {
-            $this->jabatan = 'Pemilik';
+            $this->jabatan = 'pemilik';
         } else {
             $this->jabatan = null; // Jika tidak sesuai format
         }
